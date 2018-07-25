@@ -1,0 +1,312 @@
+﻿using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using System;
+
+public class Scr_CharacterController : MonoBehaviour
+{
+    #region Tracking Variables
+    [HideInInspector] public Vector3 InputVector;
+    [HideInInspector] public Quaternion TargetRotation;
+    [HideInInspector] public Vector3 TargetPosition;
+    public float CurrentAccelerationPercentage;
+    List<float> AccelerationHistory = new List<float>();
+    public int AccelerationHistoryLength;
+    public List<Scr_PositionTimeStamp> PositionTimeStamps = new List<Scr_PositionTimeStamp>();
+    public Vector3 PreviousPosition;
+    public float TimeStampDistance;
+    public float DistanceTracker;
+    public bool Independent = false;
+
+    public bool Busy;
+    //This is a list of stings that represent all the things this object is waiting to resolve before contorl if returned
+    public List<string> WaitingList = new List<string>();
+
+    #endregion
+
+    #region Tweaking Variables
+    public bool UnderPlayerControl;
+    public float HightDelta;
+    [Tooltip("The time in seconds it would take a character to make a full 360 degree spin")]  public float TurnTime;
+    public float AccelerationSpeed;
+    public float DecelerationSpeed;
+    public float RunSpeed;
+    //The time between input snapshots
+    public float InputWaitTime;
+    float InputWaitTimer;
+    public int MaxTimeStamps;
+    public float MinimumDistance;
+    public float MaxFollowSpeed;
+    #endregion
+
+    #region External Object References
+    public Scr_CharacterController Leader;
+    public GameObject AimingReticle;
+    #endregion
+
+    #region Internal Component References
+    Rigidbody rb;
+    public Scr_Skill SkillOne;
+    public Scr_Skill SkillTwo;
+    public Collider CharacterCollider;
+    #endregion
+
+    void Start ()
+    {
+        rb = GetComponent<Rigidbody>();
+
+        PreviousPosition = transform.position;
+
+        //Put an initial entry into the position time stamps
+        Scr_PositionTimeStamp TimeStamp = new Scr_PositionTimeStamp(Time.time, transform.position);
+        PositionTimeStamps.Insert(0, TimeStamp);
+
+        //Adds the initial acceleratoin to the list
+        AccelerationHistory.Insert(0, CurrentAccelerationPercentage);
+
+    }
+	
+	void Update ()
+    {
+        UpdateBusy();
+
+        if (UnderPlayerControl)
+        {
+            UpdateInput();
+            UpdateDirection();
+            UpdatePosition();
+        }
+        else
+        {
+            UpdateFollowPosition();
+        }
+        
+        UpdateInputTimeStamp();
+        
+	}
+
+    private void LateUpdate()
+    {
+        DistanceTracker += (transform.position - PreviousPosition).magnitude;
+        PreviousPosition = transform.position;
+
+        //Add to the acceleration history
+        AccelerationHistory.Insert(0, CurrentAccelerationPercentage);
+        //Trim if too large
+        if(AccelerationHistory.Count > AccelerationHistoryLength)
+        {
+            AccelerationHistory.RemoveAt(AccelerationHistory.Count - 1);
+        }
+    }
+
+    void UpdateBusy()
+    {
+        if(WaitingList.Count == 0)
+        {
+            Busy = false;
+        }
+        else
+        {
+            Busy = true;
+        }
+    }
+
+    void UpdateInput()
+    {
+        //Determine the input vector from unity input
+        InputVector = new Vector3(Input.GetAxis("Horizontal"), 0, Input.GetAxis("Vertical"));
+
+        //Ability Inputs
+        if(UnderPlayerControl == true && Busy == false)
+        {
+            if(Input.GetKeyDown(KeyCode.Alpha1))
+            {
+                SkillOne.Activate(this);
+            }
+
+            if (Input.GetKeyDown(KeyCode.Alpha2))
+            {
+                SkillTwo.Activate(this);
+            }
+        }
+    }
+
+    void UpdateDirection()
+    {
+        #region Update Target Rotation
+        //If there is any direction input detected
+        if (InputVector.sqrMagnitude > 0)
+        {
+            //Determine the target direction the character wants to be facing
+            TargetRotation = Quaternion.LookRotation(InputVector);
+        }
+        #endregion
+
+        #region Slerp character towards rotation
+        //Dirty Slerp from current rotation to target rotation
+        //transform.rotation = Quaternion.SlerpUnclamped(transform.rotation, TargetRotation, TurnSpeed * Time.deltaTime);
+
+        //Rotate towards the target. Better Way
+        transform.rotation = Quaternion.RotateTowards(transform.rotation, TargetRotation, ((360 / TurnTime) * Time.deltaTime));
+        #endregion
+
+    }
+
+    void UpdatePosition()
+    {
+
+        #region Update Acceleration
+        //If there is any direction input detected
+        if(InputVector.sqrMagnitude > 0)
+        {
+            //Increase the acceleration percentage
+            CurrentAccelerationPercentage = Mathf.Clamp01(CurrentAccelerationPercentage + (AccelerationSpeed * Time.deltaTime));
+        }
+        //If there is no directoin input
+        else
+        {
+            //Reduce the acceleration
+            CurrentAccelerationPercentage = Mathf.Clamp01(CurrentAccelerationPercentage - (DecelerationSpeed * Time.deltaTime));
+        }
+        #endregion
+
+        #region Update Horizontal Position
+
+        #region Collision Rays
+        //Mid Height Wall Ray
+        //Ray CollisionRay = new Ray(transform.position + new Vector3(0, 0.5f, 0), transform.forward);
+        bool CanMove = true;
+
+        RaycastHit CollisionHit = new RaycastHit();
+        if(Physics.CapsuleCast(transform.position, transform.position + new Vector3(0,2,0), 0.5f, transform.forward, out CollisionHit,  0.1f))
+        {
+            //CanMove = false;
+        }
+        
+        
+        #endregion
+
+        if(CanMove == true)
+        {
+            //Move the character forward based on rotation
+            transform.position += transform.forward * RunSpeed * CurrentAccelerationPercentage * Time.deltaTime;
+        }
+        
+
+        #endregion
+
+        #region Update Vertical Position
+
+        //Create a downwards rayd from the center of the objects collider
+        Ray ray = new Ray(transform.position + new Vector3(0, 0.5f, 0), new Vector3(0, -1, 0));
+        RaycastHit hit = new RaycastHit();
+        //Cast the ray
+        if (Physics.Raycast(ray, out hit))
+        {
+            //Snap to floor
+            transform.position = SetTransformY(transform.position, hit.point.y + HightDelta);
+        }
+        #endregion
+
+    }
+
+    void UpdateFollowPosition()
+    {
+        if(Leader != null)
+        {
+            //Gets the oldest TimeStamp from the leader and sets it to the target
+            Scr_PositionTimeStamp TargetTimeStamp = Scr_PlayerController.inst.GetPositionTimeStampFromCharacter(Leader);
+
+            //Set the target rotation
+            TargetRotation = Quaternion.LookRotation(TargetTimeStamp.Position - transform.position);
+
+            //Update the target position
+            TargetPosition = TargetTimeStamp.Position;
+
+            #region Simulated Acceleration
+            //Simulated Acceleration
+
+
+            //If you are holind down a movement then use the archived acceleration
+            CurrentAccelerationPercentage = Leader.AccelerationHistory[Leader.AccelerationHistory.Count - 1];
+
+            //Update Acceleration
+            //CurrentAccelerationPercentage = Leader.CurrentAccelerationPercentage;
+            #endregion
+
+            //Update Rotation
+            transform.rotation = Quaternion.RotateTowards(transform.rotation, TargetRotation, ((360 / TurnTime) * Time.deltaTime));
+
+            //Update Position     //This bit is intentional, as it scales the follow speed based on the distance to the target point
+            //Determine the full vector
+            Vector3 FollowVector = (TargetPosition - transform.position) * RunSpeed * CurrentAccelerationPercentage;
+            //Determine the magnitude
+            float FollowVectorMagnitude = Mathf.Clamp(FollowVector.magnitude, 0, MaxFollowSpeed);
+            //Clamp the magnitude
+            FollowVector = FollowVector.normalized * FollowVectorMagnitude * Time.deltaTime;
+            //Normalize and reapply new magnatude
+
+            transform.position += FollowVector;
+        }
+        //If you dont have a leader, slow down consistently still
+        else
+        {
+            //update Decelration
+            CurrentAccelerationPercentage = Mathf.Clamp01(CurrentAccelerationPercentage - (DecelerationSpeed * Time.deltaTime));
+            //Move the character forward based on rotation
+            transform.position += transform.forward * RunSpeed * CurrentAccelerationPercentage * Time.deltaTime;
+        }
+    }
+
+    void UpdateInputTimeStamp()
+    {
+        if(DistanceTracker > TimeStampDistance)
+        {
+            DistanceTracker = 0;
+
+            Scr_PositionTimeStamp TimeStamp = new Scr_PositionTimeStamp(Time.time, transform.position);
+            PositionTimeStamps.Insert(0, TimeStamp);
+
+
+            if (PositionTimeStamps.Count > MaxTimeStamps)
+            {
+                PositionTimeStamps.RemoveAt(MaxTimeStamps);
+            }
+        }
+    }
+
+    public Vector3 SetTransformY(Vector3 _Vector, float newY)
+    {
+        //Grab Vector
+        Vector3 modifiedVector = _Vector;
+
+        //Change Vector
+        modifiedVector.y = newY;
+
+        //Return Vector
+        return modifiedVector;
+    }
+
+    private void OnDrawGizmos()
+    {
+        //foreach(Scr_PositionTimeStamp timeStamp in PositionTimeStamps)
+        //{
+        //    Gizmos.DrawCube(timeStamp.Position, (Vector3.one / 5));
+        //}
+    }
+}
+
+[Serializable]
+public class Scr_PositionTimeStamp
+{
+    public float TimeStamp;
+    public Vector3 Position;
+
+    public Scr_PositionTimeStamp(float _timeStamp, Vector3 _position)
+    {
+        TimeStamp = _timeStamp;
+        Position = _position;
+    }
+}
+
+

@@ -22,6 +22,9 @@ public class Scr_CharacterController : MonoBehaviour
     //This is a list of stings that represent all the things this object is waiting to resolve before contorl if returned
     public List<string> WaitingList = new List<string>();
 
+    public GameObject FloorObject;
+    public GameObject PreviousFloorObject;
+
     #endregion
 
     #region Tweaking Variables
@@ -38,6 +41,7 @@ public class Scr_CharacterController : MonoBehaviour
     public float MinimumDistance;
     public float MaxFollowSpeed;
     public float UnPartyDistance;
+    public float CharacterHeight;
     #endregion
 
     #region External Object References
@@ -65,6 +69,11 @@ public class Scr_CharacterController : MonoBehaviour
         //Adds the initial acceleratoin to the list
         AccelerationHistory.Insert(0, CurrentAccelerationPercentage);
 
+        //Set the floor object
+        UpdateTransformParenting();
+        //Set the previous floor object
+        PreviousFloorObject = FloorObject;
+
     }
 	
 	void Update ()
@@ -85,7 +94,7 @@ public class Scr_CharacterController : MonoBehaviour
         UpdateTransformParenting();
         UpdateInputTimeStamp();
         
-	}
+	} 
 
     private void LateUpdate()
     {
@@ -99,6 +108,9 @@ public class Scr_CharacterController : MonoBehaviour
         {
             AccelerationHistory.RemoveAt(AccelerationHistory.Count - 1);
         }
+
+        //Save the previous FloorObject
+        PreviousFloorObject = FloorObject;
     }
 
     void UpdateBusy()
@@ -191,7 +203,7 @@ public class Scr_CharacterController : MonoBehaviour
         //If collidiong forward
         if ((Physics.Raycast(CollisionRay, out CollisionHit, ReachDistance)) || (!Physics.Raycast(DropRay, out DropHit, DropDistance)))
         {
-            Debug.Log("Hitting forward Wall");
+            //Debug.Log("Hitting forward Wall");
             //Moving Forward
             if(CollisionVelocity.z > 0)
             {
@@ -210,7 +222,7 @@ public class Scr_CharacterController : MonoBehaviour
         //If collidiong forward
         if ((Physics.Raycast(CollisionRay, out CollisionHit, ReachDistance)) || (!Physics.Raycast(DropRay, out DropHit, DropDistance)))
         {
-            Debug.Log("Hitting forward Wall");
+            //Debug.Log("Hitting forward Wall");
             //Moving Forward
             if (CollisionVelocity.z < 0)
             {
@@ -230,7 +242,7 @@ public class Scr_CharacterController : MonoBehaviour
         //If collidiong forward
         if ((Physics.Raycast(CollisionRay, out CollisionHit, ReachDistance)) || (!Physics.Raycast(DropRay, out DropHit, DropDistance)))
         {
-            Debug.Log("Hitting forward Wall");
+            //Debug.Log("Hitting forward Wall");
             //Moving Forward
             if (CollisionVelocity.x > 0)
             {
@@ -249,7 +261,7 @@ public class Scr_CharacterController : MonoBehaviour
         //If collidiong forward
         if ((Physics.Raycast(CollisionRay, out CollisionHit, ReachDistance)) || (!Physics.Raycast(DropRay, out DropHit, DropDistance)))
         {
-            Debug.Log("Hitting forward Wall");
+            //Debug.Log("Hitting forward Wall");
             //Moving Forward
             if (CollisionVelocity.x < 0)
             {
@@ -367,19 +379,52 @@ public class Scr_CharacterController : MonoBehaviour
     void UpdateTransformParenting()
     {
         #region Update Platform Parenting
+        //Create a downward ray
         Ray DownRay = new Ray(transform.position, new Vector3(0, -1, 0));
         RaycastHit DownHit = new RaycastHit();
-        if (Physics.Raycast(DownRay, out DownHit, 1.1f))
+        //Check what you are currently standing on
+        if (Physics.Raycast(DownRay, out DownHit, (CharacterHeight / 2) + 1))
         {
-            if (DownHit.transform.gameObject.GetComponent<Scr_Block_Movable>() != null)
+            FloorObject = DownHit.transform.gameObject;
+
+            if (FloorObject.layer == 8)
             {
-                transform.parent = DownHit.transform;
+                transform.parent = FloorObject.transform;
             }
             else
             {
                 transform.parent = Scr_PlayerController.inst.transform;
             }
         }
+        #endregion
+
+        #region Portal Check
+        if(PreviousFloorObject != null && FloorObject != null)
+        {
+            //If the previous floor object was not a portal
+            if (PreviousFloorObject.GetComponent<Scr_Portal_Entity>() == null)
+            {
+                //And the current one is
+                if (FloorObject.GetComponent<Scr_Portal_Entity>() != null)
+                {
+                    if(FloorObject.GetComponent<Scr_Portal_Entity>().GetPartnerPortal() != null)
+                    {
+                        if(FloorObject.GetComponent<Scr_Portal_Entity>().IsBlocked() == false)
+                        {
+                            //Teleport the character
+                            Scr_Portal_Entity TargetPortal = FloorObject.GetComponent<Scr_Portal_Entity>().GetPartnerPortal();
+                            Vector3 TargetPosition = TargetPortal.transform.position + new Vector3(0, CharacterHeight / 2, 0);
+                            transform.position = TargetPosition;
+
+                            //Make the character independant
+                            Scr_PlayerController.inst.SeperateCharacter(Scr_PlayerController.inst.GetPartyIndex(this));
+                        }
+                        
+                    }
+                }
+            }
+        }
+
         #endregion
     }
 

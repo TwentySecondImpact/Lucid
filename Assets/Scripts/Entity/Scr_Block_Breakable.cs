@@ -32,11 +32,6 @@ public class Scr_Block_Breakable : Scr_Entity
         Destroy(this.gameObject);
     }
 
-    public override void Skill_Jump()
-    {
-        base.Skill_Jump();
-    }
-
     #endregion
 
 

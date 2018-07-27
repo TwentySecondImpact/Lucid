@@ -7,21 +7,32 @@ public class Scr_Entity : MonoBehaviour
     public bool Pushable;
     public bool Pullable;
     public bool Breakable;
-    public Collider collider;
-
+    public Collider EntityCollider;
+    public int UnitScale;
     public bool Busy = false;
+
+    public GameObject FloorObject;
+    public GameObject PreviousFloorObject;
+
+    public bool WaitingToTeleport = false;
+    public Vector3 TeleportTarget;
 
 	// Use this for initialization
 	protected virtual void Start ()
     {
-        collider = GetComponent<Collider>();
+        EntityCollider = GetComponent<Collider>();
 	}
 	
 	// Update is called once per frame
 	protected virtual void Update ()
     {
-		
-	}
+        UpdateTransformParenting();
+    }
+
+    private void LateUpdate()
+    {
+        PreviousFloorObject = FloorObject;
+    }
 
     #region Skill interactions
     public virtual void Skill_Push(Scr_CharacterController _Character, Vector3 _HitPoint)
@@ -34,7 +45,7 @@ public class Scr_Entity : MonoBehaviour
             Direction.Normalize();
             Debug.Log(Direction);
             //Debug.Log("Is object next to: " + HasObjectNextTo(collider.bounds.center, Direction, 2));
-            if (HasObjectNextTo(collider.bounds.center, SnapVectorToGrid(Direction), 2) == false)
+            if (HasObjectNextTo(EntityCollider.bounds.center, SnapVectorToGrid(Direction), UnitScale) == false)
             {
                 StartCoroutine(ShiftPosition(transform.position + SnapVectorToGrid(Direction) * 2));
             }
@@ -51,16 +62,11 @@ public class Scr_Entity : MonoBehaviour
             Direction.Normalize();
             Debug.Log(Direction);
 
-            if (HasObjectNextTo(collider.bounds.center, -Direction, 2) == false)
+            if (HasObjectNextTo(EntityCollider.bounds.center, -Direction, UnitScale) == false)
             {
                 StartCoroutine(ShiftPosition(transform.position - SnapVectorToGrid(Direction) * 2));
             }
         }
-    }
-
-    public virtual void Skill_Jump()
-    {
-
     }
 
     public static Vector3 SnapVectorToGrid(Vector3 _Vector)
@@ -85,7 +91,8 @@ public class Scr_Entity : MonoBehaviour
 
     public bool HasObjectNextTo(Vector3 _Origin,  Vector3 _DirectionToCheck, int UnitScale)
     {
-        Ray DropRay = new Ray(_Origin + _DirectionToCheck * UnitScale, new Vector3(0, -1, 0));
+        //Slightly further than 2 units to check extents
+        Ray DropRay = new Ray(_Origin + (_DirectionToCheck * (UnitScale + 0.1f)), new Vector3(0, -1, 0));
         RaycastHit BoxHit = new RaycastHit();
         //Check if anything is behind the object (the 2.1 is so its slightly less than half, so it doesnt clip the floor
         if (Physics.BoxCast(_Origin, new Vector3(UnitScale / 2.1f, UnitScale / 2.1f, UnitScale / 2.1f), _DirectionToCheck, out BoxHit, Quaternion.identity, UnitScale))
@@ -104,26 +111,87 @@ public class Scr_Entity : MonoBehaviour
         
     }
 
+    void UpdateTransformParenting()
+    {
+        #region Update Platform Parenting
+        //Create a downward ray
+        Ray DownRay = new Ray(transform.position + new Vector3(0, EntityCollider.bounds.extents.y, 0), new Vector3(0, -1, 0));
+        RaycastHit DownHit = new RaycastHit();
+        //Check what you are currently standing on
+        if (Physics.Raycast(DownRay, out DownHit, EntityCollider.bounds.extents.y + 0.1f))
+        {
+            FloorObject = DownHit.transform.gameObject;
+
+            if (FloorObject.layer == 8)
+            {
+                transform.parent = FloorObject.transform;
+            }
+            else
+            {
+                transform.parent = Scr_PlayerController.inst.transform;
+            }
+        }
+        #endregion
+
+        #region Portal Check
+        if (PreviousFloorObject != null && FloorObject != null)
+        {
+            //If the previous floor object was not a portal
+            if (PreviousFloorObject.GetComponent<Scr_Portal_Entity>() == null)
+            {
+                //And the current one is
+                if (FloorObject.GetComponent<Scr_Portal_Entity>() != null)
+                {
+                    if (FloorObject.GetComponent<Scr_Portal_Entity>().GetPartnerPortal() != null)
+                    {
+                        if (FloorObject.GetComponent<Scr_Portal_Entity>().IsBlocked() == false)
+                        {
+                            WaitingToTeleport = true;
+                            //Teleport the character
+                            Scr_Portal_Entity TargetPortal = FloorObject.GetComponent<Scr_Portal_Entity>().GetPartnerPortal();
+                            Vector3 TargetPosition = TargetPortal.transform.position + new Vector3(0, -TargetPortal.EntityCollider.bounds.extents.y / 2, 0);
+                            transform.position = TargetPosition;
+                            TeleportTarget = TargetPosition;
+                            TargetPortal.LatestEntity = this.gameObject;
+                        }
+                    }
+                }
+            }
+        }
+
+        #endregion
+    }
+
     IEnumerator ShiftPosition(Vector3 _TargetPosition)
     {
         //Sets busy to true so it cant be messed with during transition
         Busy = true;
+        Vector3 FinalPosition = _TargetPosition;
 
         //The movement Loop
         for (int i = 0; i < 100; i++)
         {
             transform.position = Vector3.LerpUnclamped(transform.position, _TargetPosition, 7 * Time.deltaTime);
 
+            yield return null;
+
             if (((transform.position - _TargetPosition).magnitude) < 0.01f)
             {
                 break;
             }
 
-            yield return null;
+            if (WaitingToTeleport)
+            {
+                WaitingToTeleport = false;
+                FinalPosition = TeleportTarget;
+                break;
+            }
+
+            
         }
 
         //Final safe snap
-        transform.position = _TargetPosition;
+        transform.position = FinalPosition;
         Busy = false;
     }
 

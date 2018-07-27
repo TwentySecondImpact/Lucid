@@ -37,6 +37,7 @@ public class Scr_CharacterController : MonoBehaviour
     public int MaxTimeStamps;
     public float MinimumDistance;
     public float MaxFollowSpeed;
+    public float UnPartyDistance;
     #endregion
 
     #region External Object References
@@ -80,7 +81,8 @@ public class Scr_CharacterController : MonoBehaviour
         {
             UpdateFollowPosition();
         }
-        
+
+        UpdateTransformParenting();
         UpdateInputTimeStamp();
         
 	}
@@ -173,24 +175,93 @@ public class Scr_CharacterController : MonoBehaviour
         #region Update Horizontal Position
 
         #region Collision Rays
-        //Mid Height Wall Ray
-        //Ray CollisionRay = new Ray(transform.position + new Vector3(0, 0.5f, 0), transform.forward);
-        bool CanMove = true;
 
+        Vector3 CollisionVelocity = transform.forward;
+        float DropDistance = 0.7f;
+        float DropReach = 0.5f;
+        float ReachDistance = 0.5f;
+
+        #region Forward Collision
+        Ray CollisionRay = new Ray(transform.position + new Vector3(0, -0.70f, 0), new Vector3(0,0,1));
         RaycastHit CollisionHit = new RaycastHit();
-        if(Physics.CapsuleCast(transform.position, transform.position + new Vector3(0,2,0), 0.5f, transform.forward, out CollisionHit,  0.1f))
+
+        Ray DropRay = new Ray(transform.position + new Vector3(0, -0.70f, DropReach), new Vector3(0, -1, 0));
+        RaycastHit DropHit = new RaycastHit();
+
+        //If collidiong forward
+        if ((Physics.Raycast(CollisionRay, out CollisionHit, ReachDistance)) || (!Physics.Raycast(DropRay, out DropHit, DropDistance)))
         {
-            //CanMove = false;
+            Debug.Log("Hitting forward Wall");
+            //Moving Forward
+            if(CollisionVelocity.z > 0)
+            {
+                CollisionVelocity.z = 0;
+            }
         }
-        
-        
         #endregion
 
-        if(CanMove == true)
+        #region Backward Collision
+        CollisionRay = new Ray(transform.position + new Vector3(0, -0.70f, 0), new Vector3(0, 0, -1));
+        CollisionHit = new RaycastHit();
+
+        DropRay = new Ray(transform.position + new Vector3(0, -0.70f, -DropReach), new Vector3(0, -1, 0));
+        DropHit = new RaycastHit();
+
+        //If collidiong forward
+        if ((Physics.Raycast(CollisionRay, out CollisionHit, ReachDistance)) || (!Physics.Raycast(DropRay, out DropHit, DropDistance)))
         {
-            //Move the character forward based on rotation
-            transform.position += transform.forward * RunSpeed * CurrentAccelerationPercentage * Time.deltaTime;
+            Debug.Log("Hitting forward Wall");
+            //Moving Forward
+            if (CollisionVelocity.z < 0)
+            {
+                CollisionVelocity.z = 0;
+            }
         }
+        #endregion
+
+        #region Right Collision
+        CollisionRay = new Ray(transform.position + new Vector3(0, -0.70f, 0), new Vector3(1, 0, 0));
+        CollisionHit = new RaycastHit();
+
+        DropRay = new Ray(transform.position + new Vector3(DropReach, -0.70f, 0), new Vector3(0, -1, 0));
+        DropHit = new RaycastHit();
+
+
+        //If collidiong forward
+        if ((Physics.Raycast(CollisionRay, out CollisionHit, ReachDistance)) || (!Physics.Raycast(DropRay, out DropHit, DropDistance)))
+        {
+            Debug.Log("Hitting forward Wall");
+            //Moving Forward
+            if (CollisionVelocity.x > 0)
+            {
+                CollisionVelocity.x = 0;
+            }
+        }
+        #endregion
+
+        #region Left Collision
+        CollisionRay = new Ray(transform.position + new Vector3(0, -0.70f, 0), new Vector3(-1, 0, 0));
+        CollisionHit = new RaycastHit();
+
+        DropRay = new Ray(transform.position + new Vector3(-DropReach, -0.70f, 0), new Vector3(0, -1, 0));
+        DropHit = new RaycastHit();
+
+        //If collidiong forward
+        if ((Physics.Raycast(CollisionRay, out CollisionHit, ReachDistance)) || (!Physics.Raycast(DropRay, out DropHit, DropDistance)))
+        {
+            Debug.Log("Hitting forward Wall");
+            //Moving Forward
+            if (CollisionVelocity.x < 0)
+            {
+                CollisionVelocity.x = 0;
+            }
+        }
+        #endregion
+
+        #endregion
+
+        //Move the character forward based on rotation
+        transform.position += CollisionVelocity * RunSpeed * CurrentAccelerationPercentage * Time.deltaTime;
         
 
         #endregion
@@ -208,12 +279,30 @@ public class Scr_CharacterController : MonoBehaviour
         }
         #endregion
 
+        
     }
 
     void UpdateFollowPosition()
     {
         if(Leader != null)
         {
+            #region Distance Detachment
+            //If they are on a moveable block
+            if(Leader.transform.parent.GetComponent<Scr_Block_Movable>() != null)
+            {
+                //And they are too far away
+                float distance = (transform.position - Leader.transform.position).magnitude;
+                //If they are too far away
+                if(distance > UnPartyDistance)
+                {
+                    //Break up the party
+                    Scr_PlayerController.inst.SeperateCharacter(Scr_PlayerController.inst.GetPartyIndex(this));
+                    //Get out of the Follow function, now that you dont have a leadrr
+                    return;
+                }
+            }
+            #endregion
+
             //Gets the oldest TimeStamp from the leader and sets it to the target
             Scr_PositionTimeStamp TargetTimeStamp = Scr_PlayerController.inst.GetPositionTimeStampFromCharacter(Leader);
 
@@ -273,6 +362,25 @@ public class Scr_CharacterController : MonoBehaviour
                 PositionTimeStamps.RemoveAt(MaxTimeStamps);
             }
         }
+    }
+
+    void UpdateTransformParenting()
+    {
+        #region Update Platform Parenting
+        Ray DownRay = new Ray(transform.position, new Vector3(0, -1, 0));
+        RaycastHit DownHit = new RaycastHit();
+        if (Physics.Raycast(DownRay, out DownHit, 1.1f))
+        {
+            if (DownHit.transform.gameObject.GetComponent<Scr_Block_Movable>() != null)
+            {
+                transform.parent = DownHit.transform;
+            }
+            else
+            {
+                transform.parent = Scr_PlayerController.inst.transform;
+            }
+        }
+        #endregion
     }
 
     public Vector3 SetTransformY(Vector3 _Vector, float newY)

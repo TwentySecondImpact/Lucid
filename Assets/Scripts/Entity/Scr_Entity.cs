@@ -34,10 +34,9 @@ public class Scr_Entity : MonoBehaviour
             Direction.Normalize();
             Debug.Log(Direction);
             //Debug.Log("Is object next to: " + HasObjectNextTo(collider.bounds.center, Direction, 2));
-            if (HasObjectNextTo(collider.bounds.center, Direction, 2) == false)
+            if (HasObjectNextTo(collider.bounds.center, SnapVectorToGrid(Direction), 2) == false)
             {
                 StartCoroutine(ShiftPosition(transform.position + SnapVectorToGrid(Direction) * 2));
-                //transform.position += SnapVectorToGrid(Direction) * 2;
             }
         }
     }
@@ -55,7 +54,6 @@ public class Scr_Entity : MonoBehaviour
             if (HasObjectNextTo(collider.bounds.center, -Direction, 2) == false)
             {
                 StartCoroutine(ShiftPosition(transform.position - SnapVectorToGrid(Direction) * 2));
-                //transform.position -= SnapVectorToGrid(Direction) * 2;
             }
         }
     }
@@ -65,7 +63,7 @@ public class Scr_Entity : MonoBehaviour
 
     }
 
-    public Vector3 SnapVectorToGrid(Vector3 _Vector)
+    public static Vector3 SnapVectorToGrid(Vector3 _Vector)
     {
         Vector3 SnappedVector = Vector3.zero;
         
@@ -87,12 +85,16 @@ public class Scr_Entity : MonoBehaviour
 
     public bool HasObjectNextTo(Vector3 _Origin,  Vector3 _DirectionToCheck, int UnitScale)
     {
-
+        Ray DropRay = new Ray(_Origin + _DirectionToCheck * UnitScale, new Vector3(0, -1, 0));
         RaycastHit BoxHit = new RaycastHit();
         //Check if anything is behind the object (the 2.1 is so its slightly less than half, so it doesnt clip the floor
-        if (Physics.BoxCast(_Origin, new Vector3(UnitScale/2.1f, UnitScale/2.1f, UnitScale/2.1f),  _DirectionToCheck, out BoxHit, Quaternion.identity, UnitScale))
+        if (Physics.BoxCast(_Origin, new Vector3(UnitScale / 2.1f, UnitScale / 2.1f, UnitScale / 2.1f), _DirectionToCheck, out BoxHit, Quaternion.identity, UnitScale))
         {
             Debug.Log("Hit Object: " + BoxHit.transform.gameObject);
+            return true;
+        }
+        else if (!Physics.Raycast(DropRay, UnitScale / 2 + 0.1f))
+        {
             return true;
         }
         else

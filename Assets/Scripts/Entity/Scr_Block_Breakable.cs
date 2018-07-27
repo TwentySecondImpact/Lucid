@@ -27,7 +27,9 @@ public class Scr_Block_Breakable : Scr_Entity
 
     public override void Skill_Pull(Scr_CharacterController _Character, Vector3 _HitPoint)
     {
-        base.Skill_Pull(_Character, _HitPoint);
+        //base.Skill_Push();
+        Debug.Log("Breakable block Got Pulled");
+        Destroy(this.gameObject);
     }
 
     public override void Skill_Jump()

@@ -37,7 +37,7 @@ public class Scr_PlayerController : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.E))
         {
-            SeperateCharacter();
+            SeperateCharacter(0);
         }
 
         if(Input.GetKeyDown(KeyCode.Q))
@@ -179,13 +179,13 @@ public class Scr_PlayerController : MonoBehaviour
 
     }
 
-    private void SeperateCharacter()
+    public void SeperateCharacter(int _index)
     {
-        Characters[0].Independent = true;
+        Characters[_index].Independent = true;
         DetermineLeaders();
     }
 
-    private void ReuniteCharacters()
+    public void ReuniteCharacters()
     {
         //Loop through every character, if they are within range, remove the independant and refresh leaders
         for (int i = 1; i < Characters.Count; i++)
@@ -194,9 +194,14 @@ public class Scr_PlayerController : MonoBehaviour
             //If the distance is within the bounds of the reunite variable
             if((Characters[0].transform.position - Characters[i].transform.position).magnitude < MaximumReuniteDistance)
             {
-                //Disable their independance
-                Characters[0].Independent = false;
-                Characters[i].Independent = false;
+                //Only lets the reconnect if they are 0.2 units or closer on the Y axis
+                if(Mathf.Abs(Characters[0].transform.position.y - Characters[i].transform.position.y) < 0.2f)
+                {
+                    //Disable their independance
+                    Characters[0].Independent = false;
+                    Characters[i].Independent = false;
+                }
+                
             }
         }
         DetermineLeaders();
@@ -207,5 +212,18 @@ public class Scr_PlayerController : MonoBehaviour
         //Grab the leaders timestamp
         return _Leader.PositionTimeStamps[_Leader.PositionTimeStamps.Count - 1];
 
+    }
+
+    public int GetPartyIndex(Scr_CharacterController _character)
+    {
+        for (int i = 0; i < Characters.Count; i++)
+        {
+            if( _character == Characters[i])
+            {
+                return i;
+            }
+        }
+
+        return 0;
     }
 }

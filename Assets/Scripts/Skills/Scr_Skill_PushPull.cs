@@ -30,7 +30,7 @@ public class Scr_Skill_PushPull : Scr_Skill
         //Throw out a ray in front of the character
 
         //Create a forward ray from the center of the objects collider
-        Ray PushRay = new Ray(transform.position + new Vector3(0, 0.5f, 0), _Character.transform.forward);
+        Ray PushRay = new Ray(transform.position + new Vector3(0, -0.7f, 0), _Character.transform.forward);
         RaycastHit PushHit = new RaycastHit();
         //Cast the ray
         if (Physics.Raycast(PushRay, out PushHit, 2))
@@ -48,7 +48,7 @@ public class Scr_Skill_PushPull : Scr_Skill
         else
         {
             //Create a forward ray from the center of the objects collider
-            Ray PullRay = new Ray(transform.position + new Vector3(0, 0.5f, 0), _Character.transform.forward);
+            Ray PullRay = new Ray(transform.position + new Vector3(0, -0.7f, 0), _Character.transform.forward);
             RaycastHit PullHit = new RaycastHit();
             //Cast the ray
             if (Physics.Raycast(PullRay, out PullHit, PullRange))

@@ -1,0 +1,181 @@
+[LOG] System::create                           : Header version = 1.10.07. Current version = 1.10.07.
+[LOG] SystemI::setOutputInternal               : Setting output to 'FMOD WASAPI Output'
+[LOG] Manager::init                            : maxchannels = 1024 studioflags = 00000009 flags 00000000 extradriverdata 0000000000000000.
+[LOG] SystemI::init                            : Initialize version=11007 (95892), maxchannels=1024, flags=0x00030000
+[LOG] OutputWASAPI::init                       : Mix Format (WAVEFORMATEX): wFormatTag=0xFFFE, nChannels=2, nSamplesPerSec=48000, nAvgBytesPerSec=384000, nBlockAlign=8, wBitsPerSample=32, cbSize=22.
+[LOG] OutputWASAPI::init                       : Mix Format (WAVEFORMATEXTENSIBLE): wValidBitsPerSample=32, dwChannelMask=0x00000003, SubFormat=00000003-0000-0010-8000-00AA00389B71.
+[LOG] OutputWASAPI::init                       : Output buffer size: 4096 samples, latency: 0.00ms, period: 10.00ms, DSP buffer: 1024 * 4
+[LOG] Thread::initThread                       : Init FMOD stream thread. Priority: 2, Stack Size: 65536, Semaphore: No, Sleep Time: 10, Looping: Yes.
+[LOG] SystemI::DSPCodecPoolRegister            : register codec pool for pool type 5
+[LOG] Thread::initThread                       : Init FMOD mixer thread. Priority: 3, Stack Size: 49152, Semaphore: No, Sleep Time: 0, Looping: Yes.
+[LOG] AsyncManager::init                       : manager 0000000045E2A828 isAsync 1 updatePeriod 0.02
+[LOG] Thread::initThread                       : Init FMOD Studio update thread. Priority: 0, Stack Size: 65536, Semaphore: No, Sleep Time: 1, Looping: No.
+[LOG] AsyncManager::init                       : done
+[LOG] PlaybackSystem::init                     : 
+[LOG] Thread::initThread                       : Init FMOD Studio sample load thread. Priority: 0, Stack Size: 65536, Semaphore: No, Sleep Time: 1, Looping: No.
+[LOG] PlaybackSystem::init                     : done
+[LOG] LiveUpdate::init                         : 
+[LOG] Thread::initThread                       : Init FMOD Studio bank load thread. Priority: 0, Stack Size: 65536, Semaphore: No, Sleep Time: 1, Looping: No.
+[LOG] Manager::init                            : done.
+[LOG] Profile::init                            : Profiler listening on port: 9264
+[LOG] Manager::readBank                        : fileversion = 100, compatVersion = 99 (oldest = 44, newest = 100)
+[LOG] Manager::readBank                        : fileversion = 100, compatVersion = 99 (oldest = 44, newest = 100)
+[LOG] PlaybackSystem::acquireMasterBus         : Setting master channel group format to 6
+[LOG] SystemI::createSound                     : filename = D:\22ndImpact\Asset Bundles\FINAL FMOD copy\FINAL FMOD copy\Build\Desktop/Master Bank.bank : mode 02010082
+[LOG] SystemI::createSound                     : FMOD_NONBLOCKING specified.  Putting into queue to be opened asynchronously!
+[LOG] Thread::initThread                       : Init FMOD nonblocking thread (0). Priority: 1, Stack Size: 81920, Semaphore: Yes, Sleep Time: 0, Looping: Yes.
+[LOG] SystemI::createSound                     : setdata soundi = 00000000446550D8 : node = 0000000046108F10
+[LOG] SystemI::createSound                     : add node to async list : head = 0000000045E2D3B8.  list count = 0
+[LOG] SystemI::createSound                     : filename = D:\22ndImpact\Asset Bundles\FINAL FMOD copy\FINAL FMOD copy\Build\Desktop/Master Bank.bank : mode 02010082
+[LOG] AsyncThread::threadFunc                  : Starting Asynchronous operation on sound 00000000446550D8
+[LOG] SystemI::createSound                     : FMOD_NONBLOCKING specified.  Putting into queue to be opened asynchronously!
+[LOG] SystemI::createSoundInternal             :     Create name='D:\22ndImpact\Asset Bundles\FINAL FMOD copy\FINAL FMOD copy\Build\Desktop/Master Bank.bank', mode=0x02010082
+[LOG] SystemI::createSound                     :     setdata soundi = 00000000446566C8 : node = 0000000046109C30
+[LOG] SystemI::createSoundInternal             :     exinfo->cbsize             = 232
+[LOG] SystemI::createSound                     :     add node to async list : head = 0000000045E2D3B8.  list count = 0
+[LOG] SystemI::createSound                     :     filename = D:\22ndImpact\Asset Bundles\FINAL FMOD copy\FINAL FMOD copy\Build\Desktop/Master Bank.bank : mode 02010082
+[LOG] SystemI::createSoundInternal             :     exinfo->length             = 2404736
+[LOG] SystemI::createSound                     :     FMOD_NONBLOCKING specified.  Putting into queue to be opened asynchronously!
+[LOG] SystemI::createSoundInternal             :     exinfo->fileoffset         = 17376
+[LOG] SystemI::createSound                     :     setdata soundi = 0000000044655438 : node = 00000000461085E0
+[LOG] SystemI::createSoundInternal             :     exinfo->numsubsounds       = 1
+[LOG] SystemI::createSound                     :     add node to async list : head = 0000000045E2D3B8.  list count = 1
+[LOG] SystemI::createSoundInternal             :     exinfo->inclusionlist      = 0000000046109028
+[LOG] SystemI::createSoundInternal             :     exinfo->inclusionlistnum   = 1
+[LOG] SystemI::createSoundInternal             :     exinfo->suggestedsoundtype = 5
+[LOG] SystemI::createSoundInternal             :     exinfo->initialseekpostype = 1
+[LOG] SystemI::createSoundInternal             :     Stream 0/1: name='ALL THREE PADS_FINAL', format=2, channels=2, frequency=48000, lengthbytes=871328, lengthpcm=3510857, pcmblocksize=0, loopstart=0, loopend=0, mode=0x00000000, channelmask=0x00000000, channelorder=0, peakvolume=0.067037.
+[LOG] Thread::initThread                       :     Init FMOD file thread. Priority: 1, Stack Size: 16384, Semaphore: No, Sleep Time: 10, Looping: Yes.
+[LOG] AsyncThread::threadFunc                  : Finished Asynchronous operation on sound 00000000446550D8
+[LOG] AsyncThread::threadFunc                  : Starting Asynchronous operation on sound 00000000446566C8
+[LOG] SystemI::createSoundInternal             :     Create name='D:\22ndImpact\Asset Bundles\FINAL FMOD copy\FINAL FMOD copy\Build\Desktop/Master Bank.bank', mode=0x02010082
+[LOG] SystemI::createSoundInternal             :     exinfo->cbsize             = 232
+[LOG] SystemI::createSoundInternal             :     exinfo->length             = 2404736
+[LOG] SystemI::createSoundInternal             :     exinfo->fileoffset         = 17376
+[LOG] SystemI::createSoundInternal             :     exinfo->numsubsounds       = 1
+[LOG] SystemI::createSoundInternal             :     exinfo->inclusionlist      = 0000000046109D48
+[LOG] SystemI::createSoundInternal             :     exinfo->inclusionlistnum   = 1
+[LOG] SystemI::createSoundInternal             :     exinfo->suggestedsoundtype = 5
+[LOG] SystemI::createSoundInternal             :     exinfo->initialseekpostype = 1
+[LOG] SystemI::createSoundInternal             :     Stream 0/1: name='Harp THE INAL EVER', format=2, channels=2, frequency=48000, lengthbytes=654784, lengthpcm=3510857, pcmblocksize=0, loopstart=0, loopend=0, mode=0x00000000, channelmask=0x00000000, channelorder=0, peakvolume=0.439523.
+[LOG] AsyncThread::threadFunc                  : Finished Asynchronous operation on sound 00000000446566C8
+[LOG] AsyncThread::threadFunc                  : Starting Asynchronous operation on sound 0000000044655438
+[LOG] SystemI::createSoundInternal             :     Create name='D:\22ndImpact\Asset Bundles\FINAL FMOD copy\FINAL FMOD copy\Build\Desktop/Master Bank.bank', mode=0x02010082
+[LOG] SystemI::createSoundInternal             :     exinfo->cbsize             = 232
+[LOG] SystemI::createSoundInternal             :     exinfo->length             = 2404736
+[LOG] SystemI::createSoundInternal             :     exinfo->fileoffset         = 17376
+[LOG] SystemI::createSoundInternal             :     exinfo->numsubsounds       = 1
+[LOG] SystemI::createSoundInternal             :     exinfo->inclusionlist      = 00000000461086F8
+[LOG] SystemI::createSoundInternal             :     exinfo->inclusionlistnum   = 1
+[LOG] SystemI::createSoundInternal             :     exinfo->suggestedsoundtype = 5
+[LOG] SystemI::createSoundInternal             :     exinfo->initialseekpostype = 1
+[LOG] SystemI::createSoundInternal             :     Stream 0/1: name='CALIMG WAVS_FINAL', format=2, channels=2, frequency=48000, lengthbytes=604608, lengthpcm=3510857, pcmblocksize=0, loopstart=0, loopend=0, mode=0x00000000, channelmask=0x00000000, channelorder=0, peakvolume=0.130503.
+[LOG] AsyncThread::threadFunc                  : Finished Asynchronous operation on sound 0000000044655438
+[LOG] SoundI::getSubSound                      : sound 00000000446550D8.  Subsound index 0 / 1
+[LOG] SoundI::getSubSound                      : sound 00000000446566C8.  Subsound index 0 / 1
+[LOG] SoundI::getSubSound                      : sound 0000000044655438.  Subsound index 0 / 1
+[LOG] SystemI::createSound                     : filename = D:\22ndImpact\Asset Bundles\FINAL FMOD copy\FINAL FMOD copy\Build\Desktop/Master Bank.bank : mode 02010082
+[LOG] SystemI::createSound                     : FMOD_NONBLOCKING specified.  Putting into queue to be opened asynchronously!
+[LOG] SystemI::createSound                     : setdata soundi = 0000000044656008 : node = 00000000461096F0
+[LOG] SystemI::createSound                     : add node to async list : head = 0000000045E2D3B8.  list count = 0
+[LOG] SystemI::createSound                     : filename = D:\22ndImpact\Asset Bundles\FINAL FMOD copy\FINAL FMOD copy\Build\Desktop/Master Bank.bank : mode 02010082
+[LOG] SystemI::createSound                     : FMOD_NONBLOCKING specified.  Putting into queue to be opened asynchronously!
+[LOG] AsyncThread::threadFunc                  : Starting Asynchronous operation on sound 0000000044656008
+[LOG] SystemI::createSound                     : setdata soundi = 00000000446555E8 : node = 0000000046109AE0
+[LOG] SystemI::createSoundInternal             :     Create name='D:\22ndImpact\Asset Bundles\FINAL FMOD copy\FINAL FMOD copy\Build\Desktop/Master Bank.bank', mode=0x02010082
+[LOG] SystemI::createSound                     :     add node to async list : head = 0000000045E2D3B8.  list count = 0
+[LOG] SystemI::createSoundInternal             :     exinfo->cbsize             = 232
+[LOG] SystemI::createSoundInternal             :     exinfo->length             = 2404736
+[LOG] SystemI::createSound                     :     filename = D:\22ndImpact\Asset Bundles\FINAL FMOD copy\FINAL FMOD copy\Build\Desktop/Master Bank.bank : mode 02010082
+[LOG] SystemI::createSoundInternal             :     exinfo->fileoffset         = 17376
+[LOG] SystemI::createSound                     :     FMOD_NONBLOCKING specified.  Putting into queue to be opened asynchronously!
+[LOG] SystemI::createSoundInternal             :     exinfo->numsubsounds       = 1
+[LOG] SystemI::createSoundInternal             :     exinfo->inclusionlist      = 0000000046109808
+[LOG] SystemI::createSound                     :     setdata soundi = 0000000044655798 : node = 00000000461081F0
+[LOG] SystemI::createSoundInternal             :     exinfo->inclusionlistnum   = 1
+[LOG] SystemI::createSound                     :     add node to async list : head = 0000000045E2D3B8.  list count = 1
+[LOG] SystemI::createSoundInternal             :     exinfo->suggestedsoundtype = 5
+[LOG] SystemI::createSoundInternal             :     exinfo->initialseekposition = 54857
+[LOG] SystemI::createSound                     :     filename = D:\22ndImpact\Asset Bundles\FINAL FMOD copy\FINAL FMOD copy\Build\Desktop/Master Bank.bank : mode 02010082
+[LOG] SystemI::createSoundInternal             :     exinfo->initialseekpostype = 1
+[LOG] SystemI::createSound                     :     FMOD_NONBLOCKING specified.  Putting into queue to be opened asynchronously!
+[LOG] SystemI::createSound                     :     setdata soundi = 0000000044655948 : node = 0000000046109840
+[LOG] SystemI::createSound                     :     add node to async list : head = 0000000045E2D3B8.  list count = 2
+[LOG] SystemI::createSoundInternal             :     Stream 0/1: name='ALL THREE PADS_FINAL', format=2, channels=2, frequency=48000, lengthbytes=871328, lengthpcm=3510857, pcmblocksize=0, loopstart=0, loopend=0, mode=0x00000000, channelmask=0x00000000, channelorder=0, peakvolume=0.067037.
+[LOG] AsyncThread::threadFunc                  : Finished Asynchronous operation on sound 0000000044656008
+[LOG] AsyncThread::threadFunc                  : Starting Asynchronous operation on sound 00000000446555E8
+[LOG] SystemI::createSoundInternal             :     Create name='D:\22ndImpact\Asset Bundles\FINAL FMOD copy\FINAL FMOD copy\Build\Desktop/Master Bank.bank', mode=0x02010082
+[LOG] SystemI::createSoundInternal             :     exinfo->cbsize             = 232
+[LOG] SystemI::createSoundInternal             :     exinfo->length             = 2404736
+[LOG] SystemI::createSoundInternal             :     exinfo->fileoffset         = 17376
+[LOG] SystemI::createSoundInternal             :     exinfo->numsubsounds       = 1
+[LOG] SystemI::createSoundInternal             :     exinfo->inclusionlist      = 0000000046109BF8
+[LOG] SystemI::createSoundInternal             :     exinfo->inclusionlistnum   = 1
+[LOG] SystemI::createSoundInternal             :     exinfo->suggestedsoundtype = 5
+[LOG] SystemI::createSoundInternal             :     exinfo->initialseekposition = 18457
+[LOG] SystemI::createSoundInternal             :     exinfo->initialseekpostype = 1
+[LOG] SystemI::createSoundInternal             :     Stream 0/1: name='Peruvian Panpipes_FINAL 2', format=2, channels=2, frequency=48000, lengthbytes=270368, lengthpcm=1755428, pcmblocksize=0, loopstart=0, loopend=0, mode=0x00000000, channelmask=0x00000000, channelorder=0, peakvolume=0.061212.
+[LOG] AsyncThread::threadFunc                  : Finished Asynchronous operation on sound 00000000446555E8
+[LOG] AsyncThread::threadFunc                  : Starting Asynchronous operation on sound 0000000044655798
+[LOG] SystemI::createSoundInternal             :     Create name='D:\22ndImpact\Asset Bundles\FINAL FMOD copy\FINAL FMOD copy\Build\Desktop/Master Bank.bank', mode=0x02010082
+[LOG] SystemI::createSoundInternal             :     exinfo->cbsize             = 232
+[LOG] SystemI::createSoundInternal             :     exinfo->length             = 2404736
+[LOG] SystemI::createSoundInternal             :     exinfo->fileoffset         = 17376
+[LOG] SystemI::createSoundInternal             :     exinfo->numsubsounds       = 1
+[LOG] SystemI::createSoundInternal             :     exinfo->inclusionlist      = 0000000046108308
+[LOG] SystemI::createSoundInternal             :     exinfo->inclusionlistnum   = 1
+[LOG] SystemI::createSoundInternal             :     exinfo->suggestedsoundtype = 5
+[LOG] SystemI::createSoundInternal             :     exinfo->initialseekposition = 54857
+[LOG] SystemI::createSoundInternal             :     exinfo->initialseekpostype = 1
+[LOG] SystemI::createSoundInternal             :     Stream 0/1: name='Harp THE INAL EVER', format=2, channels=2, frequency=48000, lengthbytes=654784, lengthpcm=3510857, pcmblocksize=0, loopstart=0, loopend=0, mode=0x00000000, channelmask=0x00000000, channelorder=0, peakvolume=0.439523.
+[LOG] AsyncThread::threadFunc                  : Finished Asynchronous operation on sound 0000000044655798
+[LOG] AsyncThread::threadFunc                  : Starting Asynchronous operation on sound 0000000044655948
+[LOG] SystemI::createSoundInternal             :     Create name='D:\22ndImpact\Asset Bundles\FINAL FMOD copy\FINAL FMOD copy\Build\Desktop/Master Bank.bank', mode=0x02010082
+[LOG] SystemI::createSoundInternal             :     exinfo->cbsize             = 232
+[LOG] SystemI::createSoundInternal             :     exinfo->length             = 2404736
+[LOG] SystemI::createSoundInternal             :     exinfo->fileoffset         = 17376
+[LOG] SystemI::createSoundInternal             :     exinfo->numsubsounds       = 1
+[LOG] SystemI::createSoundInternal             :     exinfo->inclusionlist      = 0000000046109958
+[LOG] SystemI::createSoundInternal             :     exinfo->inclusionlistnum   = 1
+[LOG] SystemI::createSoundInternal             :     exinfo->suggestedsoundtype = 5
+[LOG] SystemI::createSoundInternal             :     exinfo->initialseekposition = 54857
+[LOG] SystemI::createSoundInternal             :     exinfo->initialseekpostype = 1
+[LOG] SystemI::createSoundInternal             :     Stream 0/1: name='CALIMG WAVS_FINAL', format=2, channels=2, frequency=48000, lengthbytes=604608, lengthpcm=3510857, pcmblocksize=0, loopstart=0, loopend=0, mode=0x00000000, channelmask=0x00000000, channelorder=0, peakvolume=0.130503.
+[LOG] AsyncThread::threadFunc                  : Finished Asynchronous operation on sound 0000000044655948
+[LOG] SoundI::getSubSound                      : sound 0000000044656008.  Subsound index 0 / 1
+[LOG] SoundI::getSubSound                      : sound 00000000446555E8.  Subsound index 0 / 1
+[LOG] SoundI::getSubSound                      : sound 0000000044655798.  Subsound index 0 / 1
+[LOG] SoundI::getSubSound                      : sound 0000000044655948.  Subsound index 0 / 1
+[LOG] SoundI::release                          : CALIMG WAVS_FINAL (0000000044655438)
+[LOG] SoundI::release                          :     CALIMG WAVS_FINAL (0000000045E2C3C8)
+[LOG] SoundI::release                          :     CALIMG WAVS_FINAL (0000000044656BD8)
+[LOG] SoundI::release                          : Harp THE INAL EVER (00000000446566C8)
+[LOG] SoundI::release                          :     Harp THE INAL EVER (0000000045E2CD88)
+[LOG] SoundI::release                          :     Harp THE INAL EVER (0000000044656A28)
+[LOG] SoundI::release                          : ALL THREE PADS_FINAL (00000000446550D8)
+[LOG] SoundI::release                          :     ALL THREE PADS_FINAL (0000000045E2BA08)
+[LOG] SoundI::release                          :     ALL THREE PADS_FINAL (0000000044656368)
+[LOG] SoundI::release                          : CALIMG WAVS_FINAL (0000000044655948)
+[LOG] SoundI::release                          :     CALIMG WAVS_FINAL (0000000045E2BD48)
+[LOG] SoundI::release                          :     CALIMG WAVS_FINAL (0000000046142388)
+[LOG] SoundI::release                          : Harp THE INAL EVER (0000000044655798)
+[LOG] SoundI::release                          :     Harp THE INAL EVER (0000000045E2BBA8)
+[LOG] SoundI::release                          :     Harp THE INAL EVER (00000000446561B8)
+[LOG] SoundI::release                          : Peruvian Panpipes_FINAL 2 (00000000446555E8)
+[LOG] SoundI::release                          :     Peruvian Panpipes_FINAL 2 (0000000045E2CF28)
+[LOG] SoundI::release                          :     Peruvian Panpipes_FINAL 2 (0000000044655CA8)
+[LOG] SoundI::release                          : ALL THREE PADS_FINAL (0000000044656008)
+[LOG] SoundI::release                          :     ALL THREE PADS_FINAL (0000000045E2D408)
+[LOG] SoundI::release                          :     ALL THREE PADS_FINAL (0000000044655AF8)
+[LOG] Thread::callback                         : FMOD Studio update thread finished.
+[LOG] Thread::callback                         : FMOD Studio bank load thread finished.
+[LOG] Profile::disconnectAll                   : Profiler disconnecting all clients
+[LOG] Thread::callback                         : FMOD Studio sample load thread finished.
+[LOG] LiveUpdate::release                      : 
+[LOG] LiveUpdate::reset                        : Reset connection (reason Disconnected)
+[LOG] Thread::callback                         : FMOD stream thread finished.
+[LOG] Thread::callback                         : FMOD mixer thread finished.
+[LOG] Profile::disconnectAll                   : Profiler disconnecting all clients
+[LOG] Thread::callback                         : FMOD nonblocking thread (0) finished.
+[LOG] Thread::callback                         : FMOD file thread finished.
+[LOG] SystemI::close                           : Closed.

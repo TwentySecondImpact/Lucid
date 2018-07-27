@@ -23,65 +23,71 @@ public class Scr_Skill_Portal : Scr_Skill
     }
 
     public override void Activate(Scr_CharacterController _Character)
-    {
-        //Runs the parent scripts Activate function
+    {//Runs the parent scripts Activate function
         base.Activate(_Character);
 
-        
-
-        //If the character is on flat ground
-        if(_Character.FloorObject.layer == 8)
+        //If they are not standing on a portal 
+        if (_Character.FloorObject.GetComponent<Scr_Portal_Entity>() == null)
         {
-            List<Vector3> PossiblePositions = DeterminePosition(_Character.transform.position + new Vector3(0, -0.9f, 0));
-            List<Vector3> GroundedPositions = new List<Vector3>();
-
-            //Check through all possible positions to see what is grounded
-            for (int i = 0; i < PossiblePositions.Count; i++)
+            //If the character is on flat ground
+            if (_Character.FloorObject.layer == 8)
             {
-                if (CheckPortalOverLand(PossiblePositions[i]))
+                List<Vector3> PossiblePositions = DeterminePosition(SnapToGrid(_Character.transform.position + new Vector3(0, -0.9f, 0)));
+                List<Vector3> GroundedPositions = new List<Vector3>();
+
+                //Check through all possible positions to see what is grounded
+                for (int i = 0; i < PossiblePositions.Count; i++)
                 {
-                    Debug.Log("Postal Grounded: " + PossiblePositions[i]);
-                    GroundedPositions.Add(PossiblePositions[i]);
-                }
-            }
-
-            //Figure out the closest position from the remaining grounded positions
-            Vector3 ClosestPosition = CheckClosestPosition(GroundedPositions, _Character.transform.position + new Vector3(0, -0.9f, 0));
-
-            //Create portal
-            GameObject NewPortal = GameObject.Instantiate(PortalPrefab);
-
-            //Set position Lowering it to be in line with the floor
-            NewPortal.transform.position = ClosestPosition + new Vector3(0,-0.1f + 0.005f,0);
-
-            //Sets this portal to both current and previous floor objects to avoid instant porting
-            _Character.FloorObject = NewPortal;
-            _Character.PreviousFloorObject = NewPortal;
-
-            //Also make the portal creator independant
-            Scr_PlayerController.inst.SeperateCharacter(Scr_PlayerController.inst.GetPartyIndex(_Character));
-
-            //Adds the new portal to the from of the list
-            Portals.Insert(0, NewPortal);
-
-            //If the portal list is now greater than 2, remove the oldest one
-            if (Portals.Count > 2)
-            {
-                GameObject PortalToDelete = Portals[Portals.Count - 1];
-                Portals.RemoveAt(Portals.Count - 1);
-
-                //Pass over parenting
-                if(PortalToDelete.transform.childCount > 0)
-                {
-                    for (int i = 0; i < PortalToDelete.transform.childCount; i++)
+                    if (CheckPortalOverLand(PossiblePositions[i]))
                     {
-                        PortalToDelete.transform.GetChild(i).parent = PortalToDelete.transform.parent;
+                        Debug.Log("Postal Grounded: " + PossiblePositions[i]);
+                        GroundedPositions.Add(PossiblePositions[i]);
                     }
                 }
 
-                Destroy(PortalToDelete);
+                //Figure out the closest position from the remaining grounded positions
+                Vector3 ClosestPosition = CheckClosestPosition(GroundedPositions, _Character.transform.position + new Vector3(0, -0.9f, 0));
+
+                //Create portal
+                GameObject NewPortal = GameObject.Instantiate(PortalPrefab);
+
+                //Set position Lowering it to be in line with the floor
+                NewPortal.transform.position = ClosestPosition + new Vector3(0, -0.1f + 0.005f, 0);
+
+                //Sets this portal to both current and previous floor objects to avoid instant porting
+                _Character.FloorObject = NewPortal;
+                _Character.PreviousFloorObject = NewPortal;
+
+                //Also make the portal creator independant
+                Scr_PlayerController.inst.SeperateCharacter(Scr_PlayerController.inst.GetPartyIndex(_Character));
+
+                //Adds the new portal to the from of the list
+                Portals.Insert(0, NewPortal);
+
+                //If the portal list is now greater than 2, remove the oldest one
+                if (Portals.Count > 2)
+                {
+                    GameObject PortalToDelete = Portals[Portals.Count - 1];
+                    Portals.RemoveAt(Portals.Count - 1);
+
+                    //Pass over parenting
+                    if (PortalToDelete.transform.childCount > 0)
+                    {
+                        for (int i = 0; i < PortalToDelete.transform.childCount; i++)
+                        {
+                            PortalToDelete.transform.GetChild(i).parent = PortalToDelete.transform.parent;
+                        }
+                    }
+
+                    Destroy(PortalToDelete);
+                }
             }
         }
+        
+
+        
+
+        
         
     }
 
@@ -89,7 +95,17 @@ public class Scr_Skill_Portal : Scr_Skill
     {
         Vector3 SnappedPosition = _Position;
         SnappedPosition.x = Mathf.RoundToInt(SnappedPosition.x);
+        if(SnappedPosition.x % 2 != 0)
+        {
+            Debug.Log("Placed on odd grid");
+            SnappedPosition.x += 1;
+        }
         SnappedPosition.z = Mathf.RoundToInt(SnappedPosition.z);
+        if (SnappedPosition.z % 2 != 0)
+        {
+            Debug.Log("Placed on odd grid");
+            SnappedPosition.z += 1;
+        }
         return SnappedPosition;
     }
 
@@ -108,12 +124,12 @@ public class Scr_Skill_Portal : Scr_Skill
         //If the closest position is smaller, add 1 to it
         if(ClosestPosition.x < _Position.x)
         {
-            XInvertedPosition.x += 1;
+            XInvertedPosition.x += 2;
         }
         //Otherwise take 1 from it
         else
         {
-            XInvertedPosition.x -= 1;
+            XInvertedPosition.x -= 2;
         }
         PossiblePositions.Add(XInvertedPosition);
 
@@ -122,12 +138,12 @@ public class Scr_Skill_Portal : Scr_Skill
         //If the closest position is smaller, add 1 to it
         if (ClosestPosition.z < _Position.z)
         {
-            ZInvertedPosition.z += 1;
+            ZInvertedPosition.z += 2;
         }
         //Otherwise take 1 from it
         else
         {
-            ZInvertedPosition.z -= 1;
+            ZInvertedPosition.z -= 2;
         }
         PossiblePositions.Add(ZInvertedPosition);
 

@@ -64,6 +64,8 @@ public class Scr_CharacterController : MonoBehaviour
 
         PreviousPosition = transform.position;
 
+        CharacterCollider = GetComponent<CapsuleCollider>();
+
         //Put an initial entry into the position time stamps
         Scr_PositionTimeStamp TimeStamp = new Scr_PositionTimeStamp(Time.time, transform.position);
         PositionTimeStamps.Insert(0, TimeStamp);
@@ -140,14 +142,18 @@ public class Scr_CharacterController : MonoBehaviour
         //Ability Inputs
         if(UnderPlayerControl == true && Busy == false)
         {
-            if(Input.GetKeyDown(KeyCode.Alpha1))
+            if(Input.GetMouseButtonDown(0))
             {
                 SkillOne.Activate(this);
             }
 
-            if (Input.GetKeyDown(KeyCode.Alpha2))
+            if (Input.GetMouseButton(1))
             {
-                SkillTwo.Activate(this);
+                if(SkillTwo != null)
+                {
+                    SkillTwo.Activate(this);
+                }
+                
             }
         }
     }
@@ -379,6 +385,16 @@ public class Scr_CharacterController : MonoBehaviour
             //Set the target rotation
             TargetRotation = Quaternion.LookRotation(TargetTimeStamp.Position - transform.position);
 
+            #region Keep Upright
+            //Change to euler
+            Vector3 EulerRotation = TargetRotation.eulerAngles;
+            //Reset X and Z rotations (keep them standing upright)
+            EulerRotation.x = 0;
+            EulerRotation.z = 0;
+            //Revert back to quaternion
+            TargetRotation = Quaternion.Euler(EulerRotation);
+            #endregion
+
             //Update the target position
             TargetPosition = TargetTimeStamp.Position;
 
@@ -460,28 +476,32 @@ public class Scr_CharacterController : MonoBehaviour
         #region Portal Check
         if(PreviousFloorObject != null && FloorObject != null)
         {
-            //If the previous floor object was not a portal
-            if (PreviousFloorObject.GetComponent<Scr_Portal_Entity>() == null)
+            if (UnderPlayerControl)
             {
-                //And the current one is
-                if (FloorObject.GetComponent<Scr_Portal_Entity>() != null)
+                //If the previous floor object was not a portal
+                if (PreviousFloorObject.GetComponent<Scr_Portal_Entity>() == null)
                 {
-                    if(FloorObject.GetComponent<Scr_Portal_Entity>().GetPartnerPortal() != null)
+                    //And the current one is
+                    if (FloorObject.GetComponent<Scr_Portal_Entity>() != null)
                     {
-                        if(FloorObject.GetComponent<Scr_Portal_Entity>().IsBlocked() == false)
+                        if (FloorObject.GetComponent<Scr_Portal_Entity>().GetPartnerPortal() != null)
                         {
-                            //Teleport the character
-                            Scr_Portal_Entity TargetPortal = FloorObject.GetComponent<Scr_Portal_Entity>().GetPartnerPortal();
-                            Vector3 TargetPosition = TargetPortal.transform.position + new Vector3(0, CharacterHeight / 2, 0);
-                            transform.position = TargetPosition;
+                            if (FloorObject.GetComponent<Scr_Portal_Entity>().IsBlocked() == false)
+                            {
+                                //Teleport the character
+                                Scr_Portal_Entity TargetPortal = FloorObject.GetComponent<Scr_Portal_Entity>().GetPartnerPortal();
+                                Vector3 TargetPosition = TargetPortal.transform.position + new Vector3(0, CharacterHeight / 2, 0);
+                                transform.position = TargetPosition;
 
-                            //Make the character independant
-                            Scr_PlayerController.inst.SeperateCharacter(Scr_PlayerController.inst.GetPartyIndex(this));
+                                //Make the character independant
+                                Scr_PlayerController.inst.SeperateCharacter(Scr_PlayerController.inst.GetPartyIndex(this));
+                            }
+
                         }
-                        
                     }
                 }
             }
+            
         }
 
         #endregion

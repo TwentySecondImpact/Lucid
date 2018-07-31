@@ -4,7 +4,8 @@ using UnityEngine;
 
 public class Scr_Portal_Entity : Scr_Entity
 {
-
+    public bool Active = false;
+    float ArmingTime = 0;
     public GameObject LatestEntity;
 
 	// Use this for initialization
@@ -17,7 +18,6 @@ public class Scr_Portal_Entity : Scr_Entity
 	protected override void Update ()
     {
         base.Update();
-
     }
 
     public override void Skill_Phase()
@@ -25,25 +25,15 @@ public class Scr_Portal_Entity : Scr_Entity
         //Do nothing so it overrides the phasing, making this entity unable to be phased
     }
 
-    private void OnTriggerEnter(Collider other)
-    {
-        Debug.Log("TRIGGERED");
-        //if there are 2 portals
-        if(GameObject.FindObjectsOfType<Scr_Portal_Entity>().Length == 2)
-        {
-            //If the object is a character
-            if (other.tag == "Player")
-            {
-                //Teleport them
-                other.transform.position = GetPartnerPortal().transform.position;
-            }
-        }
-
-
-    }
-
     public bool IsBlocked()
     {
+        for (int i = 0; i < GetPartnerPortal().transform.childCount; i++)
+        {
+            if(GetPartnerPortal().transform.GetChild(i).tag != "Player")
+            {
+                return true;
+            }
+        }
         return false;
     }
 
@@ -60,14 +50,5 @@ public class Scr_Portal_Entity : Scr_Entity
         }
 
         return null;
-    }
-
-    private void OnDestroy()
-    {
-        //Hands the objects parented over to their parent so they dont take their children with them
-        for (int i = 0; i < transform.childCount; i++)
-        {
-            transform.GetChild(i).parent = transform.parent;
-        }
     }
 }

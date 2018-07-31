@@ -142,7 +142,7 @@ public class Scr_Entity : MonoBehaviour
         
     }
 
-    void UpdateTransformParenting()
+    public virtual void UpdateTransformParenting()
     {
         #region Update Platform Parenting
         //Create a downward ray

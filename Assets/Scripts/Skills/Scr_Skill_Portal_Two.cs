@@ -2,11 +2,13 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Scr_Skill_Portal : Scr_Skill
+public class Scr_Skill_Portal_Two : Scr_Skill
 {
 
     public GameObject PortalPrefab;
     public List<GameObject> Portals = new List<GameObject>();
+
+    public GameObject CurrentPortalTwo;
 
     // Use this for initialization
     protected override void Start()
@@ -48,8 +50,49 @@ public class Scr_Skill_Portal : Scr_Skill
                 //Figure out the closest position from the remaining grounded positions
                 Vector3 ClosestPosition = CheckClosestPosition(GroundedPositions, _Character.transform.position + new Vector3(0, -0.9f, 0));
 
+                
+                //Destroy the old portal if it exists
+                if (CurrentPortalTwo != null)
+                {
+                    //Hands the objects parented over to their parent so they dont take their children with them
+                    for (int i = 0; i < CurrentPortalTwo.transform.childCount; i++)
+                    {
+                        Debug.Log(CurrentPortalTwo.transform.GetChild(i).name);
+                        //Set the floor objects to the things on top of the portal
+                        if (CurrentPortalTwo.transform.GetChild(i).gameObject.GetComponent<Scr_CharacterController>() != null)
+                        {
+                            Debug.Log("Unparenting Character Object");
+                            CurrentPortalTwo.transform.GetChild(i).gameObject.GetComponent<Scr_CharacterController>().FloorObject = transform.parent.gameObject;
+                            CurrentPortalTwo.transform.GetChild(i).gameObject.GetComponent<Scr_CharacterController>().PreviousFloorObject = transform.parent.gameObject;
+                            CurrentPortalTwo.transform.GetChild(i).parent = transform.parent;
+                        }
+
+                        if (CurrentPortalTwo.transform.GetChild(i).gameObject.GetComponent<Scr_Block_Movable>() != null)
+                        {
+                            Debug.Log("Unparenting Entity Object");
+                            CurrentPortalTwo.transform.GetChild(i).gameObject.GetComponent<Scr_Entity>().FloorObject = transform.parent.gameObject;
+                            CurrentPortalTwo.transform.GetChild(i).gameObject.GetComponent<Scr_Entity>().PreviousFloorObject = transform.parent.gameObject;
+                            CurrentPortalTwo.transform.GetChild(i).parent = transform.parent;
+                        }
+
+                        //Debug.Log("Moving Object: " + transform.GetChild(i) + " From parent: " + transform.GetChild(i).parent + " To Parent: " + transform.parent);
+                        
+                    }
+
+                    //The collider needs to be disabled in order to stop reparenting in the next frame before destroying
+                    CurrentPortalTwo.GetComponent<Scr_Entity>().EntityCollider.enabled = false;
+                    Destroy(CurrentPortalTwo);
+                }
+
                 //Create portal
                 GameObject NewPortal = GameObject.Instantiate(PortalPrefab);
+
+
+                //Set the new portal
+                CurrentPortalTwo = NewPortal;
+
+                //Set the new portals partent to the characters parent
+                NewPortal.transform.parent = _Character.transform.parent;
 
                 //Set position Lowering it to be in line with the floor
                 NewPortal.transform.position = ClosestPosition + new Vector3(0, -0.1f + 0.005f, 0);
@@ -64,38 +107,33 @@ public class Scr_Skill_Portal : Scr_Skill
                 //Adds the new portal to the from of the list
                 Portals.Insert(0, NewPortal);
 
-                //If the portal list is now greater than 2, remove the oldest one
-                if (Portals.Count > 2)
-                {
-                    GameObject PortalToDelete = Portals[Portals.Count - 1];
-                    Portals.RemoveAt(Portals.Count - 1);
+                ////If the portal list is now greater than 2, remove the oldest one
+                //if (Portals.Count > 2)
+                //{
+                //    GameObject PortalToDelete = Portals[Portals.Count - 1];
+                //    Portals.RemoveAt(Portals.Count - 1);
 
-                    //Pass over parenting
-                    if (PortalToDelete.transform.childCount > 0)
-                    {
-                        for (int i = 0; i < PortalToDelete.transform.childCount; i++)
-                        {
-                            PortalToDelete.transform.GetChild(i).parent = PortalToDelete.transform.parent;
-                        }
-                    }
+                //    //Pass over parenting
+                //    if (PortalToDelete.transform.childCount > 0)
+                //    {
+                //        for (int i = 0; i < PortalToDelete.transform.childCount; i++)
+                //        {
+                //            PortalToDelete.transform.GetChild(i).parent = PortalToDelete.transform.parent;
+                //        }
+                //    }
 
-                    Destroy(PortalToDelete);
-                }
+                //    Destroy(PortalToDelete);
+                //}
             }
         }
-        
 
-        
-
-        
-        
     }
 
     public Vector3 SnapToGrid(Vector3 _Position)
     {
         Vector3 SnappedPosition = _Position;
         SnappedPosition.x = Mathf.RoundToInt(SnappedPosition.x);
-        if(SnappedPosition.x % 2 != 0)
+        if (SnappedPosition.x % 2 != 0)
         {
             Debug.Log("Placed on odd grid");
             SnappedPosition.x += 1;
@@ -122,7 +160,7 @@ public class Scr_Skill_Portal : Scr_Skill
         //X Inverted
         Vector3 XInvertedPosition = ClosestPosition;
         //If the closest position is smaller, add 1 to it
-        if(ClosestPosition.x < _Position.x)
+        if (ClosestPosition.x < _Position.x)
         {
             XInvertedPosition.x += 2;
         }
@@ -164,7 +202,7 @@ public class Scr_Skill_Portal : Scr_Skill
 
         //Top Right
         Ray DropRay = new Ray(_Position + new Vector3(0.5f, 0, 0.5f), new Vector3(0, -1, 0));
-        if(!Physics.Raycast(DropRay, 0.3f))
+        if (!Physics.Raycast(DropRay, 0.3f))
         {
             Debug.Log("Top Right not grounded");
             OnGround = false;
@@ -199,13 +237,13 @@ public class Scr_Skill_Portal : Scr_Skill
 
     public Vector3 CheckClosestPosition(List<Vector3> _PossiblePositions, Vector3 _OriginPosition)
     {
-        Vector3 ClosestPosition = new Vector3(0,0,0);
+        Vector3 ClosestPosition = new Vector3(0, 0, 0);
         float CurrentClosestDistance = 9999;
 
         for (int i = 0; i < _PossiblePositions.Count; i++)
         {
             //Debug.Log("Grounded Position " + i + ": " + _PossiblePositions[i]);
-            if(Vector3.Distance(_PossiblePositions[i], _OriginPosition) < CurrentClosestDistance)
+            if (Vector3.Distance(_PossiblePositions[i], _OriginPosition) < CurrentClosestDistance)
             {
                 //Set the new closest distance
                 CurrentClosestDistance = Vector3.Distance(_PossiblePositions[i], _OriginPosition);

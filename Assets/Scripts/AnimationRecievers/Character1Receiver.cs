@@ -17,5 +17,9 @@ public class Character1Receiver : MonoBehaviour
 		
 	}
 
+    void ActivateFromAnimation()
+    {
+        transform.parent.GetComponent<Scr_Skill_Push>().ActivateFromAnimation();
+    }
 
 }

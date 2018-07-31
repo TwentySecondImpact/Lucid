@@ -29,7 +29,7 @@ public class Scr_Block_Breakable : Scr_Entity
     {
         //base.Skill_Push();
         Debug.Log("Breakable block Got Pulled");
-        Destroy(this.gameObject);
+        //Destroy(this.gameObject);
     }
 
     #endregion

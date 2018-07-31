@@ -24,7 +24,7 @@ GameObject:
   - component: {fileID: 65643587837516060}
   - component: {fileID: 114234259709494122}
   m_Layer: 8
-  m_Name: Portal
+  m_Name: Portal_One
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -114,7 +114,9 @@ MonoBehaviour:
   EntityCollider: {fileID: 0}
   UnitScale: 2
   Busy: 0
+  PhasedOut: 0
   FloorObject: {fileID: 0}
   PreviousFloorObject: {fileID: 0}
   WaitingToTeleport: 0
   TeleportTarget: {x: 0, y: 0, z: 0}
+  LatestEntity: {fileID: 0}

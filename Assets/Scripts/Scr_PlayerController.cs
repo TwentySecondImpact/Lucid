@@ -1,11 +1,13 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class Scr_PlayerController : MonoBehaviour
 {
     public static Scr_PlayerController inst;
     public List<Scr_CharacterController> Characters;
+
 
     //The amount of TimeStamps delay there is behind the character
     public int InputDelay;
@@ -43,6 +45,11 @@ public class Scr_PlayerController : MonoBehaviour
         if(Input.GetKeyDown(KeyCode.Q))
         {
             ReuniteCharacters();
+        }
+
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            SceneManager.LoadScene("Demo Level");
         }
     }
 

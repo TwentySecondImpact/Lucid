@@ -1,68 +1,34 @@
 fileFormatVersion: 2
-guid: 96868789ac4380549b580ef2c0c57ca3
+guid: 3878d1ce6344d0544bb0f676f9056c71
 ModelImporter:
   serializedVersion: 23
   fileIDToRecycleName:
-    100000: Arm_Bicep_L
-    100002: Arm_Bicep_R
-    100004: Arm_End_L
-    100006: Arm_End_R
-    100008: Arm_Forearm_L
-    100010: Arm_Forearm_R
-    100012: Arm_Hand_L
-    100014: Arm_Hand_R
-    100016: Arm_Shoulder_L
-    100018: Arm_Shoulder_R
-    100020: Character_Mesh
-    100022: //RootNode
-    100024: Head_Bone
-    100026: Head_Bone_End
-    100028: Leg_Calf_R
-    100030: Leg_Calf_R(mirrored)
-    100032: Leg_Thigh_R
-    100034: Leg_Thigh_R(mirrored)
-    100036: Leg_Toe_R
-    100038: Leg_Toe_R(mirrored)
-    100040: Spinal_Bone_01
-    100042: Spinal_Bone_02
-    100044: Spinal_Bone_03
-    100046: Spinal_Bone_04
-    100048: Spinal_Neck
-    400000: Arm_Bicep_L
-    400002: Arm_Bicep_R
-    400004: Arm_End_L
-    400006: Arm_End_R
-    400008: Arm_Forearm_L
-    400010: Arm_Forearm_R
-    400012: Arm_Hand_L
-    400014: Arm_Hand_R
-    400016: Arm_Shoulder_L
-    400018: Arm_Shoulder_R
-    400020: Character_Mesh
-    400022: //RootNode
-    400024: Head_Bone
-    400026: Head_Bone_End
-    400028: Leg_Calf_R
-    400030: Leg_Calf_R(mirrored)
-    400032: Leg_Thigh_R
-    400034: Leg_Thigh_R(mirrored)
-    400036: Leg_Toe_R
-    400038: Leg_Toe_R(mirrored)
-    400040: Spinal_Bone_01
-    400042: Spinal_Bone_02
-    400044: Spinal_Bone_03
-    400046: Spinal_Bone_04
-    400048: Spinal_Neck
+    100000: Bone001
+    100002: Bone002
+    100004: Bone003
+    100006: Bone004
+    100008: Bone005(mirrored)
+    100010: Bone006(mirrored)
+    100012: Circle009
+    100014: //RootNode
+    100016: Syl_Mesh
+    400000: Bone001
+    400002: Bone002
+    400004: Bone003
+    400006: Bone004
+    400008: Bone005(mirrored)
+    400010: Bone006(mirrored)
+    400012: Circle009
+    400014: //RootNode
+    400016: Syl_Mesh
     2100000: 08 - Default
-    2300000: Character_Mesh
-    3300000: Character_Mesh
-    4300000: Character_Mesh
+    4300000: Syl_Mesh
     7400000: Syl_Idle
     7400002: Syl_Walk
-    7400004: Syl_Portal
+    7400004: Syl_PortalOne
+    7400006: Syl_PortalTwo
     9500000: //RootNode
-    11100000: //RootNode
-    13700000: Character_Mesh
+    13700000: Syl_Mesh
     2186277476908879412: ImportLogs
   externalObjects: {}
   materials:
@@ -84,7 +50,7 @@ ModelImporter:
     animationDoRetargetingWarnings: 0
     importAnimatedCustomProperties: 0
     importConstraints: 0
-    animationCompression: 3
+    animationCompression: 1
     animationRotationError: 0.5
     animationPositionError: 0.5
     animationScaleError: 0.5
@@ -103,7 +69,7 @@ ModelImporter:
       cycleOffset: 0
       loop: 0
       hasAdditiveReferencePose: 0
-      loopTime: 1
+      loopTime: 0
       loopBlend: 0
       loopBlendOrientation: 0
       loopBlendPositionY: 0
@@ -131,7 +97,7 @@ ModelImporter:
       cycleOffset: 0
       loop: 0
       hasAdditiveReferencePose: 0
-      loopTime: 1
+      loopTime: 0
       loopBlend: 0
       loopBlendOrientation: 0
       loopBlendPositionY: 0
@@ -149,10 +115,38 @@ ModelImporter:
       maskSource: {instanceID: 0}
       additiveReferencePoseFrame: 0
     - serializedVersion: 16
-      name: Syl_Portal
+      name: Syl_PortalOne
       takeName: Take 001
       firstFrame: 141
-      lastFrame: 169
+      lastFrame: 159
+      wrapMode: 0
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 0
+      hasAdditiveReferencePose: 0
+      loopTime: 0
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask: []
+      maskType: 3
+      maskSource: {instanceID: 0}
+      additiveReferencePoseFrame: 0
+    - serializedVersion: 16
+      name: Syl_PortalTwo
+      takeName: Take 001
+      firstFrame: 141
+      lastFrame: 159
       wrapMode: 0
       orientationOffsetY: 0
       level: 0
@@ -222,7 +216,7 @@ ModelImporter:
     rootMotionBoneName: 
     rootMotionBoneRotation: {x: 0, y: 0, z: 0, w: 1}
     hasTranslationDoF: 0
-    hasExtraRoot: 1
+    hasExtraRoot: 0
     skeletonHasParents: 1
   lastHumanDescriptionAvatarSource: {instanceID: 0}
   animationType: 2

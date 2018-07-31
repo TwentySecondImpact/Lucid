@@ -22,10 +22,10 @@ public class Scr_Skill_Push : Scr_Skill
     {
         //Runs the parent scripts Activate function
         base.Activate(_Character);
-        if(!_Character.CharacterAnimator.GetCurrentAnimatorStateInfo(0).IsName("Skill_OneShot"))
+        if(!_Character.CharacterAnimator.GetCurrentAnimatorStateInfo(0).IsName("Push"))
         {
             //Debug.Log("Push Pull Activate");
-            _Character.CharacterAnimator.SetTrigger("Skill_OneShot");
+            _Character.CharacterAnimator.SetTrigger("Skill_Push");
         }
         
 

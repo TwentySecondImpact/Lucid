@@ -216,4 +216,10 @@ MonoBehaviour:
   EntityCollider: {fileID: 0}
   UnitScale: 2
   Busy: 0
+  PhasedOut: 0
   FloorObject: {fileID: 0}
+  PreviousFloorObject: {fileID: 0}
+  WaitingToTeleport: 0
+  TeleportTarget: {x: 0, y: 0, z: 0}
+  OriginalMaterial: {fileID: 2100000, guid: 93707f2dc1befc941ae7af1686a43ff9, type: 2}
+  PhasedMaterial: {fileID: 2100000, guid: 527df7e08db1cf2498447b1fe9103d23, type: 2}

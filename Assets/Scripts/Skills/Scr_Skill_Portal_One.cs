@@ -25,120 +25,132 @@ public class Scr_Skill_Portal_One : Scr_Skill
     }
 
     public override void Activate(Scr_CharacterController _Character)
-    {//Runs the parent scripts Activate function
+    {
+        //Runs the parent scripts Activate function
         base.Activate(_Character);
 
-        bool OnOtherCharacter = false;
 
-        //foreach(Scr_CharacterController other in GameObject.FindObjectsOfType<Scr_CharacterController>())
-        //{
-        //    if(_Character.CharacterCollider.bounds.Intersects(other.CharacterCollider.bounds) && other != _Character)
-        //    {
-        //        OnOtherCharacter = true;
-        //    }
-        //}
-
-        //If you are not currently on another character
-        if(OnOtherCharacter == false)
+        if (!_Character.CharacterAnimator.GetCurrentAnimatorStateInfo(0).IsName("PortalOne"))
         {
-            //If they are not standing on a portal 
-            if (_Character.FloorObject.GetComponent<Scr_Portal_Entity>() == null)
+            //Debug.Log("Push Pull Activate");
+            _Character.CharacterAnimator.SetTrigger("Skill_PortalOne");
+
+            //_Character.Channeling = true;
+        }
+
+    }
+
+    public void ActivateFromAnimation()
+    {
+
+        Scr_CharacterController _Character = GetComponent<Scr_CharacterController>();
+
+        //_Character.Channeling = false;
+
+        //If they are not standing on a portal 
+        if (_Character.FloorObject.GetComponent<Scr_Portal_Entity>() == null)
+        {
+            //If the character is on flat ground
+            if (_Character.FloorObject.layer == 8)
             {
-                //If the character is on flat ground
-                if (_Character.FloorObject.layer == 8)
+                List<Vector3> PossiblePositions = DeterminePosition(SnapToGrid(_Character.transform.position + new Vector3(0, -0.9f, 0)));
+                List<Vector3> GroundedPositions = new List<Vector3>();
+
+                //Check through all possible positions to see what is grounded
+                for (int i = 0; i < PossiblePositions.Count; i++)
                 {
-                    List<Vector3> PossiblePositions = DeterminePosition(SnapToGrid(_Character.transform.position + new Vector3(0, -0.9f, 0)));
-                    List<Vector3> GroundedPositions = new List<Vector3>();
-
-                    //Check through all possible positions to see what is grounded
-                    for (int i = 0; i < PossiblePositions.Count; i++)
+                    if (CheckPortalOverLand(PossiblePositions[i]))
                     {
-                        if (CheckPortalOverLand(PossiblePositions[i]))
-                        {
-                            Debug.Log("Postal Grounded: " + PossiblePositions[i]);
-                            GroundedPositions.Add(PossiblePositions[i]);
-                        }
+                        Debug.Log("Postal Grounded: " + PossiblePositions[i]);
+                        GroundedPositions.Add(PossiblePositions[i]);
                     }
-
-                    //Figure out the closest position from the remaining grounded positions
-                    Vector3 ClosestPosition = CheckClosestPosition(GroundedPositions, _Character.transform.position + new Vector3(0, -0.9f, 0));
-
-                    
-                    //Destroy the old portal if it exists
-                    if (CurrentPortalOne != null)
-                    {
-                        //Hands the objects parented over to their parent so they dont take their children with them
-                        for (int i = 0; i < CurrentPortalOne.transform.childCount; i++)
-                        {
-                            //Set the floor objects to the things on top of the portal
-                            if (CurrentPortalOne.transform.GetChild(i).gameObject.GetComponent<Scr_CharacterController>() != null)
-                            {
-                                Debug.Log("Unparenting Character Object");
-                                CurrentPortalOne.transform.GetChild(i).gameObject.GetComponent<Scr_CharacterController>().FloorObject = transform.parent.gameObject;
-                                CurrentPortalOne.transform.GetChild(i).gameObject.GetComponent<Scr_CharacterController>().PreviousFloorObject = transform.parent.gameObject;
-                                CurrentPortalOne.transform.GetChild(i).parent = transform.parent;
-                            }
-
-                            if (CurrentPortalOne.transform.GetChild(i).gameObject.GetComponent<Scr_Block_Movable>() != null)
-                            {
-                                Debug.Log("Unparenting Entity Object");
-                                CurrentPortalOne.transform.GetChild(i).gameObject.GetComponent<Scr_Entity>().FloorObject = transform.parent.gameObject;
-                                CurrentPortalOne.transform.GetChild(i).gameObject.GetComponent<Scr_Entity>().PreviousFloorObject = transform.parent.gameObject;
-                                CurrentPortalOne.transform.GetChild(i).parent = transform.parent;
-                            }
-
-                            Debug.Log("Moving Object: " + transform.GetChild(i) + " From parent: " + transform.GetChild(i).parent + " To Parent: " + transform.parent);
-                        }
-
-                        //The collider needs to be disabled in order to stop reparenting in the next frame before destroying
-                        CurrentPortalOne.GetComponent<Scr_Entity>().EntityCollider.enabled = false;
-                        Destroy(CurrentPortalOne);
-                    }
-
-                    //Create portal
-                    GameObject NewPortal = GameObject.Instantiate(PortalPrefab);
-
-                    //Set the new portal
-                    CurrentPortalOne = NewPortal;
-
-                    //Set the new portals partent to the characters parent
-                    NewPortal.transform.parent = _Character.transform.parent;
-                    //NewPortal.GetComponent<Scr_Portal_Entity>().FloorObject = _Character.transform.parent;
-
-                    //Set position Lowering it to be in line with the floor
-                    NewPortal.transform.position = ClosestPosition + new Vector3(0, -0.1f + 0.005f, 0);
-
-                    //Sets this portal to both current and previous floor objects to avoid instant porting
-                    _Character.FloorObject = NewPortal;
-                    _Character.PreviousFloorObject = NewPortal;
-
-                    //Also make the portal creator independant
-                    Scr_PlayerController.inst.SeperateCharacter(Scr_PlayerController.inst.GetPartyIndex(_Character));
-
-                    //Adds the new portal to the from of the list
-                    Portals.Insert(0, NewPortal);
-
-                    ////If the portal list is now greater than 2, remove the oldest one
-                    //if (Portals.Count > 2)
-                    //{
-                    //    GameObject PortalToDelete = Portals[Portals.Count - 1];
-                    //    Portals.RemoveAt(Portals.Count - 1);
-
-                    //    //Pass over parenting
-                    //    if (PortalToDelete.transform.childCount > 0)
-                    //    {
-                    //        for (int i = 0; i < PortalToDelete.transform.childCount; i++)
-                    //        {
-                    //            PortalToDelete.transform.GetChild(i).parent = PortalToDelete.transform.parent;
-                    //        }
-                    //    }
-
-                    //    Destroy(PortalToDelete);
-                    //}
                 }
+
+                //Figure out the closest position from the remaining grounded positions
+                Vector3 ClosestPosition = CheckClosestPosition(GroundedPositions, _Character.transform.position + new Vector3(0, -0.9f, 0));
+
+
+                //Destroy the old portal if it exists
+                if (CurrentPortalOne != null)
+                {
+                    List<Transform> PortalChildren = new List<Transform>();
+
+                    //Create a seperate list so yo udont take items out of a list youre working with
+                    for (int i = 0; i < CurrentPortalOne.transform.childCount; i++)
+                    {
+                        PortalChildren.Add(CurrentPortalOne.transform.GetChild(i));
+                    }
+
+                    //Hands the objects parented over to their parent so they dont take their children with them
+                    for (int i = 0; i < PortalChildren.Count; i++)
+                    {
+                        //Set the floor objects to the things on top of the portal
+                        if (PortalChildren[i].gameObject.GetComponent<Scr_CharacterController>() != null)
+                        {
+                            Debug.Log("Unparenting Character Object");
+                            PortalChildren[i].gameObject.GetComponent<Scr_CharacterController>().FloorObject = transform.parent.gameObject;
+                            PortalChildren[i].gameObject.GetComponent<Scr_CharacterController>().PreviousFloorObject = transform.parent.gameObject;
+                            PortalChildren[i].parent = transform.parent;
+                        }
+
+                        if (PortalChildren[i].gameObject.GetComponent<Scr_Block_Movable>() != null)
+                        {
+                            Debug.Log("Unparenting Entity Object");
+                            PortalChildren[i].gameObject.GetComponent<Scr_Entity>().FloorObject = transform.parent.gameObject;
+                            PortalChildren[i].gameObject.GetComponent<Scr_Entity>().PreviousFloorObject = transform.parent.gameObject;
+                            PortalChildren[i].parent = transform.parent;
+                        }
+
+                        //Debug.Log("Moving Object: " + transform.GetChild(i) + " From parent: " + transform.GetChild(i).parent + " To Parent: " + transform.parent);
+                    }
+
+                    //The collider needs to be disabled in order to stop reparenting in the next frame before destroying
+                    CurrentPortalOne.GetComponent<Scr_Entity>().EntityCollider.enabled = false;
+                    Destroy(CurrentPortalOne);
+                }
+
+                //Create portal
+                GameObject NewPortal = GameObject.Instantiate(PortalPrefab);
+
+                //Set the new portal
+                CurrentPortalOne = NewPortal;
+
+                //Set the new portals partent to the characters parent
+                NewPortal.transform.parent = _Character.transform.parent;
+                //NewPortal.GetComponent<Scr_Portal_Entity>().FloorObject = _Character.transform.parent;
+
+                //Set position Lowering it to be in line with the floor
+                NewPortal.transform.position = ClosestPosition + new Vector3(0, -0.1f + 0.005f, 0);
+
+                //Sets this portal to both current and previous floor objects to avoid instant porting
+                _Character.FloorObject = NewPortal;
+                _Character.PreviousFloorObject = NewPortal;
+
+                //Also make the portal creator independant
+                Scr_PlayerController.inst.SeperateCharacter(Scr_PlayerController.inst.GetPartyIndex(_Character));
+
+                //Adds the new portal to the from of the list
+                Portals.Insert(0, NewPortal);
+
+                ////If the portal list is now greater than 2, remove the oldest one
+                //if (Portals.Count > 2)
+                //{
+                //    GameObject PortalToDelete = Portals[Portals.Count - 1];
+                //    Portals.RemoveAt(Portals.Count - 1);
+
+                //    //Pass over parenting
+                //    if (PortalToDelete.transform.childCount > 0)
+                //    {
+                //        for (int i = 0; i < PortalToDelete.transform.childCount; i++)
+                //        {
+                //            PortalToDelete.transform.GetChild(i).parent = PortalToDelete.transform.parent;
+                //        }
+                //    }
+
+                //    Destroy(PortalToDelete);
+                //}
             }
         }
-        
         
     }
 

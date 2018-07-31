@@ -26,6 +26,19 @@ public class Scr_Skill_Pull : Scr_Skill
         base.Activate(_Character);
 
         //Scr_CharacterController _Character = GetComponent<Scr_CharacterController>();
+        if (!_Character.CharacterAnimator.GetCurrentAnimatorStateInfo(0).IsName("Pull"))
+        {
+            Debug.Log("Setting to pull");
+            //Debug.Log("Push Pull Activate");
+            _Character.CharacterAnimator.SetTrigger("Skill_Pull");
+        }
+
+    }
+
+    public void ActivateFromAnimation()
+    {
+        Debug.Log("Pulling");
+        Scr_CharacterController _Character = GetComponent<Scr_CharacterController>();
 
         //Create a forward ray from the center of the objects collider
         Ray PullRay = new Ray(transform.position + new Vector3(0, -0.7f, 0), _Character.transform.forward);
@@ -50,13 +63,6 @@ public class Scr_Skill_Pull : Scr_Skill
                 }
             }
         }
-    }
 
-    public void ActivateFromAnimation()
-    {
-        //Reset the active state of the ability so it can eb used again
-        //Active = false;
-
-        
     }
 }

@@ -221,3 +221,5 @@ MonoBehaviour:
   PreviousFloorObject: {fileID: 0}
   WaitingToTeleport: 0
   TeleportTarget: {x: 0, y: 0, z: 0}
+  OriginalMaterial: {fileID: 2100000, guid: 529bb7502bcfcb94ca4fe73a421b44cf, type: 2}
+  PhasedMaterial: {fileID: 2100000, guid: 527df7e08db1cf2498447b1fe9103d23, type: 2}

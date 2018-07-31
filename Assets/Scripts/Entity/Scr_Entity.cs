@@ -19,10 +19,14 @@ public class Scr_Entity : MonoBehaviour
     public bool WaitingToTeleport = false;
     public Vector3 TeleportTarget;
 
+    public Material OriginalMaterial;
+    public Material PhasedMaterial;
+
 	// Use this for initialization
 	protected virtual void Start ()
     {
         EntityCollider = GetComponent<Collider>();
+        //OriginalMaterial = GetComponent<MeshRenderer>().material;
 	}
 	
 	// Update is called once per frame
@@ -90,12 +94,20 @@ public class Scr_Entity : MonoBehaviour
 
     public void PhaseOut()
     {
+        for (int i = 0; i < transform.childCount; i++)
+        {
+            transform.GetChild(i).GetComponent<MeshRenderer>().material = PhasedMaterial;
+        }
         PhasedOut = true;
         EntityCollider.enabled = false;
     }
 
     public void PhaseIn()
     {
+        for (int i = 0; i < transform.childCount; i++)
+        {
+            transform.GetChild(i).GetComponent<MeshRenderer>().material = OriginalMaterial;
+        }
         PhasedOut = false;
         EntityCollider.enabled = true;
     }

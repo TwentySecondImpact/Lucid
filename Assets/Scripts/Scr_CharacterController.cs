@@ -147,7 +147,7 @@ public class Scr_CharacterController : MonoBehaviour
                 SkillOne.Activate(this);
             }
 
-            if (Input.GetMouseButton(1))
+            if (Input.GetMouseButtonDown(1))
             {
                 if(SkillTwo != null)
                 {

@@ -25,8 +25,29 @@ public class Scr_Skill_Portal_Two : Scr_Skill
     }
 
     public override void Activate(Scr_CharacterController _Character)
-    {//Runs the parent scripts Activate function
+    {
+        //Runs the parent scripts Activate function
         base.Activate(_Character);
+
+        if (!_Character.CharacterAnimator.GetCurrentAnimatorStateInfo(0).IsName("PortalTwo"))
+        {
+            //Debug.Log("Push Pull Activate");
+            _Character.CharacterAnimator.SetTrigger("Skill_PortalTwo");
+
+            //_Character.Channeling = true;
+        }
+
+    }
+
+    public void ActivateFromAnimation()
+    {
+
+
+
+        Scr_CharacterController _Character = GetComponent<Scr_CharacterController>();
+
+
+        //_Character.Channeling = false;
 
         //If they are not standing on a portal 
         if (_Character.FloorObject.GetComponent<Scr_Portal_Entity>() == null)
@@ -50,33 +71,41 @@ public class Scr_Skill_Portal_Two : Scr_Skill
                 //Figure out the closest position from the remaining grounded positions
                 Vector3 ClosestPosition = CheckClosestPosition(GroundedPositions, _Character.transform.position + new Vector3(0, -0.9f, 0));
 
-                
+
                 //Destroy the old portal if it exists
                 if (CurrentPortalTwo != null)
                 {
+
+                    List<Transform> PortalChildren = new List<Transform>();
+
+                    for (int i = 0; i < CurrentPortalTwo.transform.childCount; i++)
+                    {
+                        PortalChildren.Add(CurrentPortalTwo.transform.GetChild(i));
+                    }
+
                     //Hands the objects parented over to their parent so they dont take their children with them
                     for (int i = 0; i < CurrentPortalTwo.transform.childCount; i++)
                     {
                         Debug.Log(CurrentPortalTwo.transform.GetChild(i).name);
                         //Set the floor objects to the things on top of the portal
-                        if (CurrentPortalTwo.transform.GetChild(i).gameObject.GetComponent<Scr_CharacterController>() != null)
+                        if (PortalChildren[i].gameObject.GetComponent<Scr_CharacterController>() != null)
                         {
                             Debug.Log("Unparenting Character Object");
-                            CurrentPortalTwo.transform.GetChild(i).gameObject.GetComponent<Scr_CharacterController>().FloorObject = transform.parent.gameObject;
-                            CurrentPortalTwo.transform.GetChild(i).gameObject.GetComponent<Scr_CharacterController>().PreviousFloorObject = transform.parent.gameObject;
-                            CurrentPortalTwo.transform.GetChild(i).parent = transform.parent;
+                            PortalChildren[i].gameObject.GetComponent<Scr_CharacterController>().FloorObject = transform.parent.gameObject;
+                            PortalChildren[i].gameObject.GetComponent<Scr_CharacterController>().PreviousFloorObject = transform.parent.gameObject;
+                            PortalChildren[i].parent = transform.parent;
                         }
 
-                        if (CurrentPortalTwo.transform.GetChild(i).gameObject.GetComponent<Scr_Block_Movable>() != null)
+                        if (PortalChildren[i].gameObject.GetComponent<Scr_Block_Movable>() != null)
                         {
                             Debug.Log("Unparenting Entity Object");
-                            CurrentPortalTwo.transform.GetChild(i).gameObject.GetComponent<Scr_Entity>().FloorObject = transform.parent.gameObject;
-                            CurrentPortalTwo.transform.GetChild(i).gameObject.GetComponent<Scr_Entity>().PreviousFloorObject = transform.parent.gameObject;
-                            CurrentPortalTwo.transform.GetChild(i).parent = transform.parent;
+                            PortalChildren[i].gameObject.GetComponent<Scr_Entity>().FloorObject = transform.parent.gameObject;
+                            PortalChildren[i].gameObject.GetComponent<Scr_Entity>().PreviousFloorObject = transform.parent.gameObject;
+                            PortalChildren[i].parent = transform.parent;
                         }
 
                         //Debug.Log("Moving Object: " + transform.GetChild(i) + " From parent: " + transform.GetChild(i).parent + " To Parent: " + transform.parent);
-                        
+
                     }
 
                     //The collider needs to be disabled in order to stop reparenting in the next frame before destroying
@@ -126,7 +155,6 @@ public class Scr_Skill_Portal_Two : Scr_Skill
                 //}
             }
         }
-
     }
 
     public Vector3 SnapToGrid(Vector3 _Position)

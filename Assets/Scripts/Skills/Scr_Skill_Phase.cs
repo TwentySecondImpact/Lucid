@@ -7,6 +7,8 @@ public class Scr_Skill_Phase : Scr_Skill
 
     Scr_Entity PhasedEntity;
 
+    
+
     // Use this for initialization
     protected override void Start()
     {
@@ -26,7 +28,7 @@ public class Scr_Skill_Phase : Scr_Skill
         //Runs the parent scripts Activate function
         base.Activate(_Character);
 
-        if(PhasedEntity == null)
+        if (PhasedEntity == null)
         {
             //Create a forward ray from the center of the objects collider
             Ray GrabRay = new Ray(transform.position + new Vector3(0, -0.7f, 0), _Character.transform.forward);
@@ -57,6 +59,9 @@ public class Scr_Skill_Phase : Scr_Skill
                     //If there isnt a player in the heirachy then phase objects
                     if(PlayerInChildren == false)
                     {
+                        //Enable phase animation
+                        _Character.CharacterAnimator.SetBool("Skill_Phase", true);
+
                         PhasedEntity.Skill_Phase();
                         //Loop  through all the children and phase them too
                         for (int i = 0; i < PhasedEntity.transform.childCount; i++)
@@ -88,11 +93,15 @@ public class Scr_Skill_Phase : Scr_Skill
 
             if(Physics.BoxCast(EntityCollider.bounds.center, EntityCollider.bounds.extents, new Vector3(0,0,0)))
             {
-                Debug.Log("Something blocking th ephase");
+                Debug.Log("Something blocking the phase");
             }
             else
             {
                 //Turn off channeling
+
+                //Turn off the skill phase animation
+                _Character.CharacterAnimator.SetBool("Skill_Phase", false);
+
                 _Character.Channeling = false;
                 Debug.Log("Unphasing Object");
                 PhasedEntity.Skill_Phase();
@@ -106,10 +115,11 @@ public class Scr_Skill_Phase : Scr_Skill
                 }
                 PhasedEntity = null;
             }
-
-
-            
         }
-        
     }
+
+    //public void ActivateFromAnimation()
+    //{
+
+    //}
 }

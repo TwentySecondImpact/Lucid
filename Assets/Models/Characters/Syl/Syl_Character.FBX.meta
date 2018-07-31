@@ -57,9 +57,9 @@ ModelImporter:
     2300000: Character_Mesh
     3300000: Character_Mesh
     4300000: Character_Mesh
-    7400000: Idle
-    7400002: Walk
-    7400004: Skill
+    7400000: Syl_Idle
+    7400002: Syl_Walk
+    7400004: Syl_Portal
     9500000: //RootNode
     11100000: //RootNode
     13700000: Character_Mesh
@@ -93,7 +93,7 @@ ModelImporter:
     extraUserProperties: []
     clipAnimations:
     - serializedVersion: 16
-      name: Idle
+      name: Syl_Idle
       takeName: Take 001
       firstFrame: 0
       lastFrame: 100
@@ -121,7 +121,7 @@ ModelImporter:
       maskSource: {instanceID: 0}
       additiveReferencePoseFrame: 0
     - serializedVersion: 16
-      name: Walk
+      name: Syl_Walk
       takeName: Take 001
       firstFrame: 101
       lastFrame: 140
@@ -149,7 +149,7 @@ ModelImporter:
       maskSource: {instanceID: 0}
       additiveReferencePoseFrame: 0
     - serializedVersion: 16
-      name: Skill
+      name: Syl_Portal
       takeName: Take 001
       firstFrame: 141
       lastFrame: 169

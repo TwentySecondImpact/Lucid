@@ -190,19 +190,24 @@ public class Scr_PlayerController : MonoBehaviour
         //Loop through every character, if they are within range, remove the independant and refresh leaders
         for (int i = 1; i < Characters.Count; i++)
         {
-            //Debug.Log((Characters[0].transform.position - Characters[i].transform.position).magnitude);
-            //If the distance is within the bounds of the reunite variable
-            if((Characters[0].transform.position - Characters[i].transform.position).magnitude < MaximumReuniteDistance)
+            //Do not reunite channeling characters
+            if(Characters[i].Channeling == false)
             {
-                //Only lets the reconnect if they are 0.2 units or closer on the Y axis
-                if(Mathf.Abs(Characters[0].transform.position.y - Characters[i].transform.position.y) < 0.2f)
+                //Debug.Log((Characters[0].transform.position - Characters[i].transform.position).magnitude);
+                //If the distance is within the bounds of the reunite variable
+                if ((Characters[0].transform.position - Characters[i].transform.position).magnitude < MaximumReuniteDistance)
                 {
-                    //Disable their independance
-                    Characters[0].Independent = false;
-                    Characters[i].Independent = false;
+                    //Only lets the reconnect if they are 0.2 units or closer on the Y axis
+                    if (Mathf.Abs(Characters[0].transform.position.y - Characters[i].transform.position.y) < 0.2f)
+                    {
+                        //Disable their independance
+                        Characters[0].Independent = false;
+                        Characters[i].Independent = false;
+                    }
+
                 }
-                
             }
+            
         }
         DetermineLeaders();
     }

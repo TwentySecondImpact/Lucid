@@ -11,6 +11,8 @@ public class Scr_Entity : MonoBehaviour
     public int UnitScale;
     public bool Busy = false;
 
+    public bool PhasedOut = false;
+
     public GameObject FloorObject;
     public GameObject PreviousFloorObject;
 
@@ -67,6 +69,35 @@ public class Scr_Entity : MonoBehaviour
                 StartCoroutine(ShiftPosition(transform.position - SnapVectorToGrid(Direction) * 2));
             }
         }
+    }
+
+    public virtual void Skill_Phase()
+    {
+        Debug.Log("Object Phased");
+
+        if (!Busy)
+        {
+            if(PhasedOut)
+            {
+                PhaseIn();
+            }
+            else
+            {
+                PhaseOut();
+            }
+        }
+    }
+
+    public void PhaseOut()
+    {
+        PhasedOut = true;
+        EntityCollider.enabled = false;
+    }
+
+    public void PhaseIn()
+    {
+        PhasedOut = false;
+        EntityCollider.enabled = true;
     }
 
     public static Vector3 SnapVectorToGrid(Vector3 _Vector)

@@ -19,6 +19,7 @@ public class Scr_CharacterController : MonoBehaviour
     public bool Independent = false;
 
     public bool Busy;
+    public bool Channeling = false;
     //This is a list of stings that represent all the things this object is waiting to resolve before contorl if returned
     public List<string> WaitingList = new List<string>();
 
@@ -83,8 +84,11 @@ public class Scr_CharacterController : MonoBehaviour
         if (UnderPlayerControl)
         {
             UpdateInput();
-            UpdateDirection();
-            UpdatePosition();
+            if (!Channeling)
+            {
+                UpdateDirection();
+                UpdatePosition();
+            }
         }
         else
         {
@@ -168,7 +172,6 @@ public class Scr_CharacterController : MonoBehaviour
 
     void UpdatePosition()
     {
-
         #region Update Acceleration
         //If there is any direction input detected
         if(InputVector.sqrMagnitude > 0)
@@ -194,18 +197,29 @@ public class Scr_CharacterController : MonoBehaviour
         float ReachDistance = 0.5f;
 
         #region Forward Collision
+
+        //Check Forward
         Ray CollisionRay = new Ray(transform.position + new Vector3(0, -0.70f, 0), new Vector3(0,0,1));
         RaycastHit CollisionHit = new RaycastHit();
-
-        Ray DropRay = new Ray(transform.position + new Vector3(0, -0.70f, DropReach), new Vector3(0, -1, 0));
-        RaycastHit DropHit = new RaycastHit();
-
-        //If collidiong forward
-        if ((Physics.Raycast(CollisionRay, out CollisionHit, ReachDistance)) || (!Physics.Raycast(DropRay, out DropHit, DropDistance)))
+        if ((Physics.Raycast(CollisionRay, out CollisionHit, ReachDistance)))
         {
             //Debug.Log("Hitting forward Wall");
             //Moving Forward
-            if(CollisionVelocity.z > 0)
+            if(CollisionHit.transform.tag != "Player")
+            {
+                if (CollisionVelocity.z > 0)
+                {
+                    CollisionVelocity.z = 0;
+                }
+            }
+        }
+
+        //Check Forward & Down
+        Ray DropRay = new Ray(transform.position + new Vector3(0, -0.70f, DropReach), new Vector3(0, -1, 0));
+        RaycastHit DropHit = new RaycastHit();
+        if(!Physics.Raycast(DropRay, out DropHit, DropDistance))
+        {
+            if (CollisionVelocity.z > 0)
             {
                 CollisionVelocity.z = 0;
             }
@@ -213,17 +227,30 @@ public class Scr_CharacterController : MonoBehaviour
         #endregion
 
         #region Backward Collision
+        //Check Forward
         CollisionRay = new Ray(transform.position + new Vector3(0, -0.70f, 0), new Vector3(0, 0, -1));
         CollisionHit = new RaycastHit();
 
-        DropRay = new Ray(transform.position + new Vector3(0, -0.70f, -DropReach), new Vector3(0, -1, 0));
-        DropHit = new RaycastHit();
-
         //If collidiong forward
-        if ((Physics.Raycast(CollisionRay, out CollisionHit, ReachDistance)) || (!Physics.Raycast(DropRay, out DropHit, DropDistance)))
+        if (Physics.Raycast(CollisionRay, out CollisionHit, ReachDistance))
         {
             //Debug.Log("Hitting forward Wall");
             //Moving Forward
+            if (CollisionHit.transform.tag != "Player")
+            {
+                if (CollisionVelocity.z < 0)
+                {
+                    CollisionVelocity.z = 0;
+                }
+            }
+        }
+
+        //Check Forward Down
+        DropRay = new Ray(transform.position + new Vector3(0, -0.70f, -DropReach), new Vector3(0, -1, 0));
+        DropHit = new RaycastHit();
+
+        if (!Physics.Raycast(DropRay, out DropHit, DropDistance))
+        {
             if (CollisionVelocity.z < 0)
             {
                 CollisionVelocity.z = 0;
@@ -232,18 +259,30 @@ public class Scr_CharacterController : MonoBehaviour
         #endregion
 
         #region Right Collision
+        //Check Forward
         CollisionRay = new Ray(transform.position + new Vector3(0, -0.70f, 0), new Vector3(1, 0, 0));
         CollisionHit = new RaycastHit();
 
-        DropRay = new Ray(transform.position + new Vector3(DropReach, -0.70f, 0), new Vector3(0, -1, 0));
-        DropHit = new RaycastHit();
-
-
         //If collidiong forward
-        if ((Physics.Raycast(CollisionRay, out CollisionHit, ReachDistance)) || (!Physics.Raycast(DropRay, out DropHit, DropDistance)))
+        if (Physics.Raycast(CollisionRay, out CollisionHit, ReachDistance))
         {
             //Debug.Log("Hitting forward Wall");
             //Moving Forward
+            if (CollisionHit.transform.tag != "Player")
+            {
+                if (CollisionVelocity.x > 0)
+                {
+                    CollisionVelocity.x = 0;
+                }
+            }
+        }
+
+        //Check Foward Down
+        DropRay = new Ray(transform.position + new Vector3(DropReach, -0.70f, 0), new Vector3(0, -1, 0));
+        DropHit = new RaycastHit();
+
+        if (!Physics.Raycast(DropRay, out DropHit, DropDistance))
+        {
             if (CollisionVelocity.x > 0)
             {
                 CollisionVelocity.x = 0;
@@ -252,16 +291,30 @@ public class Scr_CharacterController : MonoBehaviour
         #endregion
 
         #region Left Collision
+        //Check Forward
         CollisionRay = new Ray(transform.position + new Vector3(0, -0.70f, 0), new Vector3(-1, 0, 0));
         CollisionHit = new RaycastHit();
 
+        //If collidiong forward
+        if (Physics.Raycast(CollisionRay, out CollisionHit, ReachDistance))
+        {
+            //Debug.Log("Hitting forward Wall");
+            //Moving Forward
+            if (CollisionHit.transform.tag != "Player")
+            {
+                if (CollisionVelocity.x < 0)
+                {
+                    CollisionVelocity.x = 0;
+                }
+            }
+        }
+
+        //Check Forward Down
         DropRay = new Ray(transform.position + new Vector3(-DropReach, -0.70f, 0), new Vector3(0, -1, 0));
         DropHit = new RaycastHit();
 
-        //If collidiong forward
-        if ((Physics.Raycast(CollisionRay, out CollisionHit, ReachDistance)) || (!Physics.Raycast(DropRay, out DropHit, DropDistance)))
+        if (!Physics.Raycast(DropRay, out DropHit, DropDistance))
         {
-            //Debug.Log("Hitting forward Wall");
             //Moving Forward
             if (CollisionVelocity.x < 0)
             {
@@ -272,8 +325,8 @@ public class Scr_CharacterController : MonoBehaviour
 
         #endregion
 
-        //Move the character forward based on rotation
-        transform.position += CollisionVelocity * RunSpeed * CurrentAccelerationPercentage * Time.deltaTime;
+            //Move the character forward based on rotation
+            transform.position += CollisionVelocity * RunSpeed * CurrentAccelerationPercentage * Time.deltaTime;
         
 
         #endregion
@@ -286,12 +339,14 @@ public class Scr_CharacterController : MonoBehaviour
         //Cast the ray
         if (Physics.Raycast(ray, out hit))
         {
-            //Snap to floor
-            transform.position = SetTransformY(transform.position, hit.point.y + HightDelta);
+            if (hit.transform.tag != "Player")
+            {
+                //Snap to floor
+                transform.position = SetTransformY(transform.position, hit.point.y + HightDelta);
+            }
+            
         }
         #endregion
-
-        
     }
 
     void UpdateFollowPosition()
@@ -337,6 +392,7 @@ public class Scr_CharacterController : MonoBehaviour
 
             //Update Rotation
             transform.rotation = Quaternion.RotateTowards(transform.rotation, TargetRotation, ((360 / TurnTime) * Time.deltaTime));
+            
 
             //Update Position     //This bit is intentional, as it scales the follow speed based on the distance to the target point
             //Determine the full vector

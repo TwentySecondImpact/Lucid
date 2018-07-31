@@ -20,7 +20,10 @@ public class Scr_Portal_Entity : Scr_Entity
 
     }
 
-   
+    public override void Skill_Phase()
+    {
+        //Do nothing so it overrides the phasing, making this entity unable to be phased
+    }
 
     private void OnTriggerEnter(Collider other)
     {
@@ -57,5 +60,14 @@ public class Scr_Portal_Entity : Scr_Entity
         }
 
         return null;
+    }
+
+    private void OnDestroy()
+    {
+        //Hands the objects parented over to their parent so they dont take their children with them
+        for (int i = 0; i < transform.childCount; i++)
+        {
+            transform.GetChild(i).parent = transform.parent;
+        }
     }
 }

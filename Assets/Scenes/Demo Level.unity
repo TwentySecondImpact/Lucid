@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.44657898, g: 0.4964133, b: 0.5748178, a: 1}
+  m_IndirectSpecularColor: {r: 0.43720236, g: 0.48494267, b: 0.5652125, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -2606,6 +2606,11 @@ Prefab:
         type: 2}
       propertyPath: TurnTime
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 23129632024871088, guid: b70121b33fe4eb243a2b3360ee0b9aa9,
+        type: 2}
+      propertyPath: m_CastShadows
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: b70121b33fe4eb243a2b3360ee0b9aa9, type: 2}
@@ -5444,6 +5449,10 @@ Prefab:
       propertyPath: TurnTime
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 4535958086685936, guid: c10916a4ae924264ab5e90259beed2d0, type: 2}
+      propertyPath: m_LocalPosition.y
+      value: -0.75
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: c10916a4ae924264ab5e90259beed2d0, type: 2}
   m_IsPrefabAsset: 0
@@ -6718,7 +6727,7 @@ AudioSource:
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 8300000, guid: f4332207722ac434b83eeeddc5041af6, type: 3}
   m_PlayOnAwake: 1
-  m_Volume: 1
+  m_Volume: 0.15
   m_Pitch: 1
   Loop: 1
   Mute: 0
@@ -7790,7 +7799,7 @@ Light:
   serializedVersion: 8
   m_Type: 1
   m_Color: {r: 1, g: 0.95686275, b: 0.8392157, a: 1}
-  m_Intensity: 1
+  m_Intensity: 0.74
   m_Range: 10
   m_SpotAngle: 30
   m_CookieSize: 10
@@ -7823,13 +7832,13 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 2134855455}
-  m_LocalRotation: {x: 0.40821788, y: -0.23456968, z: 0.10938163, w: 0.8754261}
-  m_LocalPosition: {x: 0, y: 3, z: 0}
+  m_LocalRotation: {x: 0.643016, y: -0.21360828, z: 0.15152541, w: 0.7196819}
+  m_LocalPosition: {x: 0, y: 3.64, z: 0.08}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 50, y: -30, z: 0}
+  m_LocalEulerAnglesHint: {x: 82, y: -54, z: -24}
 --- !u!1001 &2134950594
 Prefab:
   m_ObjectHideFlags: 0

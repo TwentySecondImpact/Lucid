@@ -26,8 +26,7 @@ public class Scr_Skill_PushPull : Scr_Skill
         base.Activate(_Character);
 
         Debug.Log("Push Pull Activate");
-
-        //Throw out a ray in front of the character
+        _Character.CharacterAnimator.SetTrigger("Skill_OneShot");
 
         //Create a forward ray from the center of the objects collider
         Ray PushRay = new Ray(transform.position + new Vector3(0, -0.7f, 0), _Character.transform.forward);
@@ -71,18 +70,12 @@ public class Scr_Skill_PushPull : Scr_Skill
                 }
             }
         }
-        
+    }
 
-        
+    
 
-        //If it hits nothing
-
-        //Do a longer raytrace for the pull
-
-        //If it hits something check that it is an entity
-
-        //If its an entity runt he entites "Hit by Pull" function
-
-
+    public void PushImpact()
+    {
+        Debug.Log("Impact Pushed");
     }
 }

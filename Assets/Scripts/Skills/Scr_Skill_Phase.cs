@@ -43,11 +43,40 @@ public class Scr_Skill_Phase : Scr_Skill
                     //If its an entity, run the entities "Hit by push" function
                     PhasedEntity = GrabHit.transform.gameObject.GetComponent<Scr_Entity>();
                     Debug.Log("Phasing Object");
-                    PhasedEntity.Skill_Phase();
-                    //Toggle on channeling
-                    _Character.Channeling = true;
-                    //Also make the portal creator independant
-                    Scr_PlayerController.inst.SeperateCharacter(Scr_PlayerController.inst.GetPartyIndex(_Character));
+
+                    //Check is the phased entity has a player as a child, if so do not phase
+                    bool PlayerInChildren = false;
+                    for (int i = 0; i < PhasedEntity.transform.childCount; i++)
+                    {
+                        if(PhasedEntity.transform.GetChild(i).GetComponent<Scr_CharacterController>() != null)
+                        {
+                            PlayerInChildren = true;
+                        }
+                    }
+
+                    //If there isnt a player in the heirachy then phase objects
+                    if(PlayerInChildren == false)
+                    {
+                        PhasedEntity.Skill_Phase();
+                        //Loop  through all the children and phase them too
+                        for (int i = 0; i < PhasedEntity.transform.childCount; i++)
+                        {
+                            if (PhasedEntity.transform.GetChild(i).GetComponent<Scr_Entity>() != null)
+                            {
+                                PhasedEntity.transform.GetChild(i).GetComponent<Scr_Entity>().Skill_Phase();
+                            }
+                        }
+
+                        //Toggle on channeling
+                        _Character.Channeling = true;
+                        //Also make the portal creator independant
+                        Scr_PlayerController.inst.SeperateCharacter(Scr_PlayerController.inst.GetPartyIndex(_Character));
+                    }
+                    //If there is a character on the object, set the phased object to null and stop the funciton
+                    else
+                    {
+                        PhasedEntity = null;
+                    }
                 }
             }
         }
@@ -67,6 +96,14 @@ public class Scr_Skill_Phase : Scr_Skill
                 _Character.Channeling = false;
                 Debug.Log("Unphasing Object");
                 PhasedEntity.Skill_Phase();
+                //Unphase Children
+                for (int i = 0; i < PhasedEntity.transform.childCount; i++)
+                {
+                    if (PhasedEntity.transform.GetChild(i).GetComponent<Scr_Entity>() != null)
+                    {
+                        PhasedEntity.transform.GetChild(i).GetComponent<Scr_Entity>().Skill_Phase();
+                    }
+                }
                 PhasedEntity = null;
             }
 

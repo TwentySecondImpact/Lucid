@@ -48,6 +48,7 @@ public class Scr_CharacterController : MonoBehaviour
     #region External Object References
     public Scr_CharacterController Leader;
     public GameObject AimingReticle;
+    public Animator CharacterAnimator;
     #endregion
 
     #region Internal Component References
@@ -95,8 +96,10 @@ public class Scr_CharacterController : MonoBehaviour
             UpdateFollowPosition();
         }
 
+
         UpdateTransformParenting();
         UpdateInputTimeStamp();
+        UpdateAnimatorParamaters();
         
 	} 
 
@@ -484,6 +487,11 @@ public class Scr_CharacterController : MonoBehaviour
         #endregion
     }
 
+    void UpdateAnimatorParamaters()
+    {
+        //ACP_AccelerationPercentage.defaultFloat = CurrentAccelerationPercentage;
+        CharacterAnimator.SetFloat("AccelerationPercentage", CurrentAccelerationPercentage);
+    }
     public Vector3 SetTransformY(Vector3 _Vector, float newY)
     {
         //Grab Vector
